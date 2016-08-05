@@ -1,6 +1,6 @@
 package ajb.examples;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,8 @@ import ajb.domain.Pixel;
 import ajb.enums.AssetSize;
 import ajb.factory.VesselGeneratorFactory;
 import ajb.utils.ImageUtils;
+
+import javax.swing.*;
 
 public class CreateImageFullOfVessels {
 
@@ -38,7 +40,13 @@ public class CreateImageFullOfVessels {
 			// save image
 			// replace with the path of wherever you want the image to go - if left
 			// as is it will be in the root project folder
-			ImageUtils.save(img, "png", "vessels_" + size);
+			ImageUtils.save(img, "png", "1vessels_" + size);
+
+			JFrame frame = new JFrame();
+			frame.getContentPane().setLayout(new FlowLayout());
+			frame.getContentPane().add(new JLabel(new ImageIcon(img)));
+			frame.pack();
+			frame.setVisible(true);
 		}
 	}
 
