@@ -2,12 +2,21 @@ package ajb.domain;
 
 public class Pixel {
 
-	public static final int EMPTY = 0;
-	public static final int FILLED = 1;
-	public static final int BORDER = 2;
-	public static final int SECONDARY = 3;
+	public enum PixelState {
+        EMPTY(0),
+        FILLED(1),
+        BORDER(2),
+        /**
+         * A secondary pixel has the secondary color, that is to say, the bright color
+         */
+        SECONDARY(3);
 
-	public int value = EMPTY;
+        int value;
+
+        PixelState(int i) { value = i; }
+    }
+
+	public PixelState value = PixelState.EMPTY;
 	public int depth = 0;
 
 }

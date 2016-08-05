@@ -53,22 +53,6 @@ public class ConvolveFilter extends AbstractBufferedImageOp {
 		this.kernel = kernel;	
 	}
 
-	public void setKernel(Kernel kernel) {
-		this.kernel = kernel;
-	}
-
-	public Kernel getKernel() {
-		return kernel;
-	}
-
-	public void setEdgeAction(int edgeAction) {
-		this.edgeAction = edgeAction;
-	}
-
-	public int getEdgeAction() {
-		return edgeAction;
-	}
-
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
         int width = src.getWidth();
         int height = src.getHeight();

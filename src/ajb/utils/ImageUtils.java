@@ -19,32 +19,24 @@ import ajb.domain.Pixel;
 public class ImageUtils {
 
 	public static BufferedImage outputToImage(Pixel[][] grid, Color primaryColor, Color secondaryColor) {
-		
-		if (primaryColor == null) {
+		if (primaryColor == null)
 			primaryColor = Color.decode(ColorUtils.getRandomColour());			
-		}		
-		
-		if (secondaryColor == null) {
+		if (secondaryColor == null)
 			secondaryColor = Color.decode(ColorUtils.getRandomColour());
-		}
-		
-		BufferedImage baseImg = createImage(grid, primaryColor, secondaryColor);
-		BufferedImage layer1Img = createImage(grid, primaryColor, secondaryColor);
-		
-		GaussianFilter filter = new GaussianFilter();
-		filter.setRadius(12f);
-		baseImg = filter.filter(baseImg, null);
-		
-		BufferedImage result = blend(baseImg, layer1Img);
 
-		filter.setRadius(1.2f);
-		result = filter.filter(result, null);
-		
+		BufferedImage layer1Img = createImage(grid, primaryColor, secondaryColor);
+		BufferedImage result = blend(volumeAndLightLayer(grid, primaryColor, secondaryColor), layer1Img);
+
 		return result;
 	}
+
+    private static BufferedImage volumeAndLightLayer(Pixel[][] grid, Color primaryColor, Color secondaryColor) {
+		GaussianFilter filter = new GaussianFilter();
+		filter.setRadius(12f);
+		return filter.filter(createImage(grid, primaryColor, secondaryColor), null);
+    }
 	
 	public static BufferedImage createImage(Pixel[][] grid, Color primaryColor, Color secondaryColor) {
-
 		GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
 
 		int scaleFactor = 1;
@@ -57,40 +49,28 @@ public class ImageUtils {
 
 		for (int r = 0; r < grid.length; r++) {
 			for (int c = 0; c < grid[0].length; c++) {
-
-				if (grid[r][c].value == Pixel.BORDER) {
-					
+				if (grid[r][c].value == Pixel.PixelState.BORDER) {
 					gr.setColor(Color.BLACK);
 					gr.fillRect(c * scaleFactor, r * scaleFactor, scaleFactor, scaleFactor);
-
-				} else if (grid[r][c].value == Pixel.FILLED) {
-
+				} else if (grid[r][c].value == Pixel.PixelState.FILLED) {
 					gr.setColor(ColorUtils.lighter(primaryColor, grid[r][c].depth * 0.05 > 3 ? 3 : grid[r][c].depth * 0.05));
 					gr.fillRect(c * scaleFactor, r * scaleFactor, scaleFactor, scaleFactor);
-
-				} else if (grid[r][c].value == Pixel.SECONDARY) {
-
+				} else if (grid[r][c].value == Pixel.PixelState.SECONDARY) {
 					gr.setColor(ColorUtils.lighter(secondaryColor, grid[r][c].depth * 0.05));
 					gr.fillRect(c * scaleFactor, r * scaleFactor, scaleFactor, scaleFactor);
 				}
 			}
 		}
-
 		gr.dispose();
-
 		return img;
 	}
 
 	public static BufferedImage outputAllToImage(List<Pixel[][]> grids, int width, int height, Color primaryColor, Color secondaryColor) {
-
 		GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
 
 		BufferedImage img = gc.createCompatibleImage(width, height, BufferedImage.TYPE_INT_ARGB);
-
 		Graphics2D gr = (Graphics2D) img.getGraphics();
-
 		gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
 		// Fill background
 		gr.setColor(Color.decode("#1E1E1E"));
 		gr.fillRect(0, 0, width, height);
@@ -100,30 +80,21 @@ public class ImageUtils {
 		int maxYForLine = 0;
 
 		for (Pixel[][] grid : grids) {
-
 			BufferedImage vesselImg = outputToImage(grid, primaryColor, secondaryColor);
-
 			if (x + (vesselImg.getWidth() + 10) > width) {
 				x = 10;
 				y += maxYForLine + 10;
 				maxYForLine = 0;
 			}
-
-			if (y + (vesselImg.getHeight() + 10) > height) {
+			if (y + (vesselImg.getHeight() + 10) > height)
 				continue;
-			}
-
 			gr.drawImage(vesselImg, x, y, null);
-
 			x += vesselImg.getWidth() + 10;
 
-			if (vesselImg.getHeight() > maxYForLine) {
+			if (vesselImg.getHeight() > maxYForLine)
 				maxYForLine = vesselImg.getHeight();
-			}
 		}
-
 		gr.dispose();
-
 		return img;
 	}
 
@@ -141,17 +112,8 @@ public class ImageUtils {
 	/**
 	 * Blend the contents of two BufferedImages according to a specified weight.
 	 * 
-	 * @param bi1
-	 *            first BufferedImage
-	 * @param bi2
-	 *            second BufferedImage
-	 * @param weight
-	 *            the fractional percentage of the first image to keep
-	 * 
-	 * @return new BufferedImage containing blended contents of BufferedImage
-	 *         arguments
+	 * @return new BufferedImage containing blended contents of BufferedImage arguments
 	 */
-
 	public static BufferedImage blend(BufferedImage bi1, BufferedImage bi2) {
 		if (bi1 == null)
 			throw new NullPointerException("bi1 is null");
@@ -171,8 +133,8 @@ public class ImageUtils {
 		
 		Graphics2D gr = (Graphics2D) img.getGraphics();
 
-		gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);	
-		
+		gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
 		Composite oldcomp = gr.getComposite();
 		// draw first image fully opaque
 		gr.drawImage(bi1, 0, 0, null);
@@ -180,7 +142,7 @@ public class ImageUtils {
 		gr.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
 		gr.drawImage(bi2, 0, 0, null);
 		gr.setComposite(oldcomp);
-		
+
 		gr.dispose();
 
 		return img;

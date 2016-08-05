@@ -37,14 +37,6 @@ public class GaussianFilter extends ConvolveFilter {
 		this.radius = radius;
 		kernel = makeKernel(radius);
 	}
-	
-	/**
-	 * Get the radius of the kernel.
-	 * @return the radius
-	 */
-	public float getRadius() {
-		return radius;
-	}
 
     public BufferedImage filter( BufferedImage src, BufferedImage dst ) {
         int width = src.getWidth();

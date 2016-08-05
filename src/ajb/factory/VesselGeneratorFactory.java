@@ -39,15 +39,10 @@ public class VesselGeneratorFactory {
 		PixelGridUtils.addNoiseToFlatPixels(grid);
 		PixelGridUtils.setPixelDepth(grid);
 
-		if (validateGrid(grid, size)) {
-			return grid;
-		} else {
-			return create(size);
-		}
+		return validateGrid(grid) ? grid : create(size);
 	}
 
-	private boolean validateGrid(Pixel[][] grid, AssetSize size) {
-
+	private boolean validateGrid(Pixel[][] grid) {
 		boolean result = true;
 
 		int noOfFilledPixels = 0;
@@ -55,27 +50,23 @@ public class VesselGeneratorFactory {
 
 		for (int x = 0; x < grid.length; x++) {
 			for (int y = 0; y < grid[0].length; y++) {
-				if (grid[x][y].value == Pixel.FILLED) {
+				if (grid[x][y].value == Pixel.PixelState.FILLED)
 					noOfFilledPixels++;
-				} else if (grid[x][y].value == Pixel.SECONDARY) {
+				else if (grid[x][y].value == Pixel.PixelState.SECONDARY)
 					noOfSecondaryPixels++;
-				}
 			}
 		}
 
-		if (noOfSecondaryPixels == 0) {
+		if (noOfSecondaryPixels == 0)
 			result = false;
-		}
 
-		if (noOfSecondaryPixels > (noOfFilledPixels / 4)) {
+		if (noOfSecondaryPixels > (noOfFilledPixels / 4))
 			result = false;
-		}
 
 		return result;
 	}
 
 	private Pixel[][] createBaseGrid(AssetSize size) {
-
 		Pixel[][] grid = new Pixel[rows][cols];
 		PixelGridUtils.initEmptyGrid(grid, rows, cols);
 
@@ -85,57 +76,43 @@ public class VesselGeneratorFactory {
 		int subSteps = RandomInt.anyRandomIntRange(calculateMinNoOfSubSteps(size), calculateMaxNoOfSubSteps(size));
 
 		for (int i = 0; i < steps; i++) {
-
 			if (point == null) {
-				// we are passed the first step lets find the lowest most pixel
-				// that is closest to the middle, and go again from there...
-
+				// we are passed the first step lets find the lowest most pixel that is closest to the middle, and go again from there...
 				// top down
 				for (int x = 0; x < rows; x++) {
 					// left to right
 					for (int y = 0; y < cols; y++) {
-						if (grid[x][y].value == Pixel.FILLED) {
+						if (grid[x][y].value == Pixel.PixelState.FILLED) {
 							point = new Point(x, y);
 						}
 					}
 				}
 			}
-
-			for (int y = 0; y < subSteps; y++) {
+			for (int y = 0; y < subSteps; y++)
 				point = processPoint(point, grid);
-			}
-
 			point = null;
 		}
-
 		return grid;
 	}
 
 	private void addExtras(Pixel[][] grid, AssetSize size) {
-
 		int steps = RandomInt.anyRandomIntRange(calculateMinNoOfSteps(size) - 10, calculateMaxNoOfSteps(size) - 10);
 		int subSteps = RandomInt.anyRandomIntRange(calculateMinNoOfSubSteps(size) - 10, calculateMaxNoOfSubSteps(size) - 10);
 
 		for (int i = 0; i < steps; i++) {
 			Point point = PixelGridUtils.getRandomFilledPoint(grid);
-
-			for (int y = 0; y < subSteps; y++) {
+			for (int y = 0; y < subSteps; y++)
 				point = processPoint(point, grid);
-			}
 		}
 	}
 
 	private Point processPoint(Point point, Pixel[][] grid) {
-
-		if (grid[point.x][point.y].value == Pixel.EMPTY) {
-			grid[point.x][point.y].value = Pixel.FILLED;
-		}
-
+		if (grid[point.x][point.y].value == Pixel.PixelState.EMPTY)
+			grid[point.x][point.y].value = Pixel.PixelState.FILLED;
 		return PixelGridUtils.getRandomAdjacentPoint(point, grid);
 	}
 
 	private int calculateMinNoOfSteps(AssetSize size) {
-
 		int result = 0;
 
 		if (size.equals(AssetSize.RANDOM)) {

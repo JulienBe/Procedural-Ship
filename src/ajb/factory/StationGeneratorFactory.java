@@ -55,9 +55,9 @@ public class StationGeneratorFactory {
 		
 		for (int x = 0; x < grid.length; x++) {
 			for (int y = 0; y < grid[0].length; y++) {
-				if (grid[x][y].value == Pixel.FILLED) {
+				if (grid[x][y].value == Pixel.PixelState.FILLED) {
 					noOfFilledPixels++;
-				} else if (grid[x][y].value == Pixel.SECONDARY) {
+				} else if (grid[x][y].value == Pixel.PixelState.SECONDARY) {
 					noOfSecondaryPixels++;
 				}
 			}
@@ -91,7 +91,7 @@ public class StationGeneratorFactory {
 				for (int x = rows - 1; x > 0; x--) {
 					// left to right
 					for (int y = 0; y < cols; y++) {
-						if (grid[x][y].value == Pixel.FILLED) {
+						if (grid[x][y].value == Pixel.PixelState.FILLED) {
 							point = new Point(x, y);
 						}
 					}
@@ -110,9 +110,9 @@ public class StationGeneratorFactory {
 
 	private Point processPoint(Point point, Pixel[][] grid) {
 
-		if (grid[point.x][point.y].value == Pixel.EMPTY) {
-			grid[point.x][point.y].value = Pixel.FILLED;
-			grid[point.y][point.x].value = Pixel.FILLED;
+		if (grid[point.x][point.y].value == Pixel.PixelState.EMPTY) {
+			grid[point.x][point.y].value = Pixel.PixelState.FILLED;
+			grid[point.y][point.x].value = Pixel.PixelState.FILLED;
 		}
 
 		return PixelGridUtils.getRandomAdjacentPoint(point, grid);
