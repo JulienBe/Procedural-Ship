@@ -49,13 +49,13 @@ public class ImageUtils {
 
 		for (int r = 0; r < grid.length; r++) {
 			for (int c = 0; c < grid[0].length; c++) {
-				if (grid[r][c].value == Pixel.PixelState.BORDER) {
+				if (grid[r][c].value == Pixel.State.BORDER) {
 					gr.setColor(Color.BLACK);
 					gr.fillRect(c * scaleFactor, r * scaleFactor, scaleFactor, scaleFactor);
-				} else if (grid[r][c].value == Pixel.PixelState.FILLED) {
+				} else if (grid[r][c].value == Pixel.State.FILLED) {
 					gr.setColor(ColorUtils.lighter(primaryColor, grid[r][c].depth * 0.05 > 3 ? 3 : grid[r][c].depth * 0.05));
 					gr.fillRect(c * scaleFactor, r * scaleFactor, scaleFactor, scaleFactor);
-				} else if (grid[r][c].value == Pixel.PixelState.SECONDARY) {
+				} else if (grid[r][c].value == Pixel.State.SECONDARY) {
 					gr.setColor(ColorUtils.lighter(secondaryColor, grid[r][c].depth * 0.05));
 					gr.fillRect(c * scaleFactor, r * scaleFactor, scaleFactor, scaleFactor);
 				}

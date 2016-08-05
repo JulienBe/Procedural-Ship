@@ -2,7 +2,7 @@ package ajb.domain;
 
 public class Pixel {
 
-	public enum PixelState {
+	public enum State {
         EMPTY(0),
         FILLED(1),
         BORDER(2),
@@ -13,10 +13,10 @@ public class Pixel {
 
         int value;
 
-        PixelState(int i) { value = i; }
+        State(int i) { value = i; }
     }
 
-	public PixelState value = PixelState.EMPTY;
+	public State value = State.EMPTY;
 	public int depth = 0;
 
 }

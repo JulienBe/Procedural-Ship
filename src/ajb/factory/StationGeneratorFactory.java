@@ -3,7 +3,7 @@ package ajb.factory;
 import java.awt.Point;
 
 import ajb.domain.Pixel;
-import ajb.enums.AssetSize;
+import ajb.domain.AssetSize;
 import ajb.random.RandomInt;
 import ajb.utils.PixelGridUtils;
 
@@ -30,11 +30,11 @@ public class StationGeneratorFactory {
 		
 		Pixel[][] grid = createBaseGrid(size);
 
-		grid = PixelGridUtils.floor(grid);
+		grid = PixelGridUtils.removeEmptyCells(grid);
 		grid = PixelGridUtils.mirrorCopyGridHorizontally(grid);
 		grid = PixelGridUtils.mirrorCopyGridVertically(grid);
 		grid = PixelGridUtils.addBorders(grid);
-		grid = PixelGridUtils.floor(grid);
+		grid = PixelGridUtils.removeEmptyCells(grid);
 		PixelGridUtils.fillEmptySurroundedPixelsInGrid(grid);
 		PixelGridUtils.addNoiseToFlatPixels(grid);			
 		PixelGridUtils.setPixelDepth(grid);		
@@ -55,9 +55,9 @@ public class StationGeneratorFactory {
 		
 		for (int x = 0; x < grid.length; x++) {
 			for (int y = 0; y < grid[0].length; y++) {
-				if (grid[x][y].value == Pixel.PixelState.FILLED) {
+				if (grid[x][y].value == Pixel.State.FILLED) {
 					noOfFilledPixels++;
-				} else if (grid[x][y].value == Pixel.PixelState.SECONDARY) {
+				} else if (grid[x][y].value == Pixel.State.SECONDARY) {
 					noOfSecondaryPixels++;
 				}
 			}
@@ -91,7 +91,7 @@ public class StationGeneratorFactory {
 				for (int x = rows - 1; x > 0; x--) {
 					// left to right
 					for (int y = 0; y < cols; y++) {
-						if (grid[x][y].value == Pixel.PixelState.FILLED) {
+						if (grid[x][y].value == Pixel.State.FILLED) {
 							point = new Point(x, y);
 						}
 					}
@@ -110,9 +110,9 @@ public class StationGeneratorFactory {
 
 	private Point processPoint(Point point, Pixel[][] grid) {
 
-		if (grid[point.x][point.y].value == Pixel.PixelState.EMPTY) {
-			grid[point.x][point.y].value = Pixel.PixelState.FILLED;
-			grid[point.y][point.x].value = Pixel.PixelState.FILLED;
+		if (grid[point.x][point.y].value == Pixel.State.EMPTY) {
+			grid[point.x][point.y].value = Pixel.State.FILLED;
+			grid[point.y][point.x].value = Pixel.State.FILLED;
 		}
 
 		return PixelGridUtils.getRandomAdjacentPoint(point, grid);

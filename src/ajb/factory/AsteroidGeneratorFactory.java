@@ -3,7 +3,7 @@ package ajb.factory;
 import java.awt.Point;
 
 import ajb.domain.Pixel;
-import ajb.enums.AssetSize;
+import ajb.domain.AssetSize;
 import ajb.utils.PixelGridUtils;
 
 public class AsteroidGeneratorFactory {
@@ -28,9 +28,9 @@ public class AsteroidGeneratorFactory {
 		}		
 		
 		Pixel[][] grid = createBaseGrid(size);
-		grid = PixelGridUtils.floor(grid);
+		grid = PixelGridUtils.removeEmptyCells(grid);
 		grid = PixelGridUtils.addBorders(grid);
-		grid = PixelGridUtils.floor(grid);
+		grid = PixelGridUtils.removeEmptyCells(grid);
 		PixelGridUtils.fillEmptySurroundedPixelsInGrid(grid);
 		PixelGridUtils.setPixelDepth(grid);
 
@@ -50,9 +50,9 @@ public class AsteroidGeneratorFactory {
 
 		for (int x = 0; x < grid.length; x++) {
 			for (int y = 0; y < grid[0].length; y++) {
-				if (grid[x][y].value == Pixel.PixelState.FILLED) {
+				if (grid[x][y].value == Pixel.State.FILLED) {
 					noOfFilledPixels++;
-				} else if (grid[x][y].value == Pixel.PixelState.SECONDARY) {
+				} else if (grid[x][y].value == Pixel.State.SECONDARY) {
 					noOfSecondaryPixels++;
 				}
 			}
@@ -90,8 +90,8 @@ public class AsteroidGeneratorFactory {
 
 	private Point processPoint(Point point, Pixel[][] grid) {
 
-		if (grid[point.x][point.y].value == Pixel.PixelState.EMPTY) {
-			grid[point.x][point.y].value = Pixel.PixelState.FILLED;
+		if (grid[point.x][point.y].value == Pixel.State.EMPTY) {
+			grid[point.x][point.y].value = Pixel.State.FILLED;
 		}
 
 		return PixelGridUtils.getRandomAdjacentPoint(point, grid);

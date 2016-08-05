@@ -2,8 +2,10 @@ package ajb.factory;
 
 import java.awt.Point;
 
+import ajb.domain.Parameters;
 import ajb.domain.Pixel;
-import ajb.enums.AssetSize;
+import ajb.domain.AssetSize;
+import ajb.domain.Steps;
 import ajb.random.RandomInt;
 import ajb.utils.PixelGridUtils;
 
@@ -12,37 +14,25 @@ public class VesselGeneratorFactory {
 	private int rows = 0;
 	private int cols = 0;
 
-	public Pixel[][] create(AssetSize size) {
+	public Pixel[][] create(AssetSize size, Parameters parameters, Steps steps) {
+		rows = size.row;
+        cols = size.col;
 
-		if (size.equals(AssetSize.RANDOM)) {
-			rows = 300;
-			cols = 300;
-		} else if (size.equals(AssetSize.SMALL)) {
-			rows = 100;
-			cols = 100;
-		} else if (size.equals(AssetSize.MEDIUM)) {
-			rows = 200;
-			cols = 200;
-		} else if (size.equals(AssetSize.LARGE)) {
-			rows = 300;
-			cols = 300;
-		}
+		Pixel[][] grid = createBaseGrid(size, steps);
+		addExtras(grid, steps);
 
-		Pixel[][] grid = createBaseGrid(size);
-		addExtras(grid, size);
-
-		grid = PixelGridUtils.floor(grid);
+		grid = PixelGridUtils.removeEmptyCells(grid);
 		grid = PixelGridUtils.mirrorCopyGridHorizontally(grid);
 		grid = PixelGridUtils.addBorders(grid);
-		grid = PixelGridUtils.floor(grid);
+		grid = PixelGridUtils.removeEmptyCells(grid);
 		PixelGridUtils.fillEmptySurroundedPixelsInGrid(grid);
 		PixelGridUtils.addNoiseToFlatPixels(grid);
 		PixelGridUtils.setPixelDepth(grid);
 
-		return validateGrid(grid) ? grid : create(size);
+		return validateGrid(grid, parameters) ? grid : create(size, parameters, steps);
 	}
 
-	private boolean validateGrid(Pixel[][] grid) {
+	private boolean validateGrid(Pixel[][] grid, Parameters parameters) {
 		boolean result = true;
 
 		int noOfFilledPixels = 0;
@@ -50,30 +40,32 @@ public class VesselGeneratorFactory {
 
 		for (int x = 0; x < grid.length; x++) {
 			for (int y = 0; y < grid[0].length; y++) {
-				if (grid[x][y].value == Pixel.PixelState.FILLED)
+				if (grid[x][y].value == Pixel.State.FILLED)
 					noOfFilledPixels++;
-				else if (grid[x][y].value == Pixel.PixelState.SECONDARY)
+				else if (grid[x][y].value == Pixel.State.SECONDARY)
 					noOfSecondaryPixels++;
 			}
 		}
+        int nbOfPixels = noOfFilledPixels + noOfSecondaryPixels;
+        float colorPercentage = (float)noOfSecondaryPixels / (float)nbOfPixels;
 
-		if (noOfSecondaryPixels == 0)
-			result = false;
+        if (noOfSecondaryPixels == 0)
+			return false;
+        if (colorPercentage > parameters.colorMaxPercentage || colorPercentage < parameters.colorMinPercentage)
+			return false;
 
-		if (noOfSecondaryPixels > (noOfFilledPixels / 4))
-			result = false;
-
+        System.out.println(colorPercentage);
 		return result;
 	}
 
-	private Pixel[][] createBaseGrid(AssetSize size) {
+	private Pixel[][] createBaseGrid(AssetSize size, Steps stepsConst) {
 		Pixel[][] grid = new Pixel[rows][cols];
 		PixelGridUtils.initEmptyGrid(grid, rows, cols);
 
 		Point point = new Point(rows / 2, cols - 1);
 
-		int steps = RandomInt.anyRandomIntRange(calculateMinNoOfSteps(size), calculateMaxNoOfSteps(size));
-		int subSteps = RandomInt.anyRandomIntRange(calculateMinNoOfSubSteps(size), calculateMaxNoOfSubSteps(size));
+		int steps = RandomInt.anyRandomIntRange(stepsConst.minSubStep, stepsConst.maxSubSteps);
+		int subSteps = RandomInt.anyRandomIntRange(stepsConst.minSteps, stepsConst.maxSteps);
 
 		for (int i = 0; i < steps; i++) {
 			if (point == null) {
@@ -82,9 +74,8 @@ public class VesselGeneratorFactory {
 				for (int x = 0; x < rows; x++) {
 					// left to right
 					for (int y = 0; y < cols; y++) {
-						if (grid[x][y].value == Pixel.PixelState.FILLED) {
+						if (grid[x][y].value == Pixel.State.FILLED)
 							point = new Point(x, y);
-						}
 					}
 				}
 			}
@@ -95,9 +86,9 @@ public class VesselGeneratorFactory {
 		return grid;
 	}
 
-	private void addExtras(Pixel[][] grid, AssetSize size) {
-		int steps = RandomInt.anyRandomIntRange(calculateMinNoOfSteps(size) - 10, calculateMaxNoOfSteps(size) - 10);
-		int subSteps = RandomInt.anyRandomIntRange(calculateMinNoOfSubSteps(size) - 10, calculateMaxNoOfSubSteps(size) - 10);
+	private void addExtras(Pixel[][] grid, Steps stepsConst) {
+		int steps = RandomInt.anyRandomIntRange(stepsConst.minSteps - 10, stepsConst.maxSteps - 10);
+		int subSteps = RandomInt.anyRandomIntRange(stepsConst.minSubStep - 10, stepsConst.maxSubSteps - 10);
 
 		for (int i = 0; i < steps; i++) {
 			Point point = PixelGridUtils.getRandomFilledPoint(grid);
@@ -107,75 +98,9 @@ public class VesselGeneratorFactory {
 	}
 
 	private Point processPoint(Point point, Pixel[][] grid) {
-		if (grid[point.x][point.y].value == Pixel.PixelState.EMPTY)
-			grid[point.x][point.y].value = Pixel.PixelState.FILLED;
+		if (grid[point.x][point.y].value == Pixel.State.EMPTY)
+			grid[point.x][point.y].value = Pixel.State.FILLED;
 		return PixelGridUtils.getRandomAdjacentPoint(point, grid);
 	}
 
-	private int calculateMinNoOfSteps(AssetSize size) {
-		int result = 0;
-
-		if (size.equals(AssetSize.RANDOM)) {
-			result = 5;
-		} else if (size.equals(AssetSize.SMALL)) {
-			result = 5;
-		} else if (size.equals(AssetSize.MEDIUM)) {
-			result = 10;
-		} else if (size.equals(AssetSize.LARGE)) {
-			result = 20;
-		}
-
-		return result;
-	}
-
-	private int calculateMaxNoOfSteps(AssetSize size) {
-
-		int result = 0;
-
-		if (size.equals(AssetSize.RANDOM)) {
-			result = 50;
-		} else if (size.equals(AssetSize.SMALL)) {
-			result = 15;
-		} else if (size.equals(AssetSize.MEDIUM)) {
-			result = 30;
-		} else if (size.equals(AssetSize.LARGE)) {
-			result = 50;
-		}
-
-		return result;
-	}
-
-	private int calculateMinNoOfSubSteps(AssetSize size) {
-
-		int result = 1;
-
-		if (size.equals(AssetSize.RANDOM)) {
-			result = 5;
-		} else if (size.equals(AssetSize.SMALL)) {
-			result = 5;
-		} else if (size.equals(AssetSize.MEDIUM)) {
-			result = 10;
-		} else if (size.equals(AssetSize.LARGE)) {
-			result = 15;
-		}
-
-		return result;
-	}
-
-	private int calculateMaxNoOfSubSteps(AssetSize size) {
-
-		int result = 0;
-
-		if (size.equals(AssetSize.RANDOM)) {
-			result = 50;
-		} else if (size.equals(AssetSize.SMALL)) {
-			result = 30;
-		} else if (size.equals(AssetSize.MEDIUM)) {
-			result = 40;
-		} else if (size.equals(AssetSize.LARGE)) {
-			result = 50;
-		}
-
-		return result;
-	}
 }

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ajb.domain.Pixel;
-import ajb.enums.AssetSize;
+import ajb.domain.AssetSize;
 import ajb.factory.AsteroidGeneratorFactory;
 import ajb.utils.ImageUtils;
 

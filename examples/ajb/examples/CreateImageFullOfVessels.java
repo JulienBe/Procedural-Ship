@@ -5,8 +5,10 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+import ajb.domain.Parameters;
 import ajb.domain.Pixel;
-import ajb.enums.AssetSize;
+import ajb.domain.AssetSize;
+import ajb.domain.Steps;
 import ajb.factory.VesselGeneratorFactory;
 import ajb.utils.ImageUtils;
 
@@ -14,20 +16,20 @@ import javax.swing.*;
 
 public class CreateImageFullOfVessels {
 
-	public static void main(String[] args) {
+	private static final Parameters PARAM = Parameters.MINE;
 
+	public static void main(String[] args) {
 		// get an instance of our vessel factory
 		VesselGeneratorFactory factory = new VesselGeneratorFactory();
 
-		for (AssetSize size : AssetSize.values()) {
+//		for (AssetSize size : AssetSize.values()) {
+        AssetSize size = AssetSize.LARGE;
 			// list to hold all the vessels we generate
 			List<Pixel[][]> grids = new ArrayList<Pixel[][]>();
 	
 			// create X vessels and add to our list
 			for (int i = 0; i < 100; i++) {
-	
-				Pixel[][] grid = factory.create(size);
-	
+				Pixel[][] grid = factory.create(size, PARAM, Steps.large);
 				// add grid to list
 				grids.add(grid);
 			}
@@ -35,7 +37,7 @@ public class CreateImageFullOfVessels {
 			Color primaryColor = Color.decode("#2A2A2A");
 	
 			// create image
-			BufferedImage img = ImageUtils.outputAllToImage(grids, 800, 800, primaryColor, null);
+			BufferedImage img = ImageUtils.outputAllToImage(grids, 1000, 1000, primaryColor, null);
 	
 			// save image
 			// replace with the path of wherever you want the image to go - if left
@@ -47,7 +49,7 @@ public class CreateImageFullOfVessels {
 			frame.getContentPane().add(new JLabel(new ImageIcon(img)));
 			frame.pack();
 			frame.setVisible(true);
-		}
+//		}
 	}
 
 }

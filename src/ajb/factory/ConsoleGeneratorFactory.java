@@ -30,20 +30,20 @@ public class ConsoleGeneratorFactory {
 		
 		for (int x = 0; x < grid.length; x++) {
 			for (int y = 0; y < grid[0].length; y++) {
-				if (grid[x][y].value == Pixel.PixelState.FILLED) {
-					if (grid[x - 1][y].value == Pixel.PixelState.EMPTY || 
-							grid[x + 1][y].value == Pixel.PixelState.EMPTY || 
-							grid[x][y - 1].value == Pixel.PixelState.EMPTY || 
-							grid[x][y + 1].value == Pixel.PixelState.EMPTY) {
+				if (grid[x][y].value == Pixel.State.FILLED) {
+					if (grid[x - 1][y].value == Pixel.State.EMPTY ||
+							grid[x + 1][y].value == Pixel.State.EMPTY ||
+							grid[x][y - 1].value == Pixel.State.EMPTY ||
+							grid[x][y + 1].value == Pixel.State.EMPTY) {
 						return false;
 					}
-				} else if (grid[x][y].value == Pixel.PixelState.SECONDARY) {
+				} else if (grid[x][y].value == Pixel.State.SECONDARY) {
 					noOfSecondaryPixels++;
 					
-					if (grid[x - 1][y].value == Pixel.PixelState.EMPTY || 
-							grid[x + 1][y].value == Pixel.PixelState.EMPTY || 
-							grid[x][y - 1].value == Pixel.PixelState.EMPTY || 
-							grid[x][y + 1].value == Pixel.PixelState.EMPTY) {
+					if (grid[x - 1][y].value == Pixel.State.EMPTY ||
+							grid[x + 1][y].value == Pixel.State.EMPTY ||
+							grid[x][y - 1].value == Pixel.State.EMPTY ||
+							grid[x][y + 1].value == Pixel.State.EMPTY) {
 						return false;
 					}
 				}
@@ -68,7 +68,7 @@ public class ConsoleGeneratorFactory {
 				for (int x = ROWS - 1; x > 0; x--) {
 					// left to right
 					for (int y = 0; y < COLS; y++) {
-						if (grid[x][y].value == Pixel.PixelState.FILLED)
+						if (grid[x][y].value == Pixel.State.FILLED)
 							point = new Point(x, y);
 					}
 				}
@@ -81,9 +81,9 @@ public class ConsoleGeneratorFactory {
 	}
 
 	private Point processPoint(Point point, Pixel[][] grid) {
-		if (grid[point.x][point.y].value == Pixel.PixelState.EMPTY) {
-			grid[point.x][point.y].value = Pixel.PixelState.FILLED;
-			grid[point.y][point.x].value = Pixel.PixelState.FILLED;
+		if (grid[point.x][point.y].value == Pixel.State.EMPTY) {
+			grid[point.x][point.y].value = Pixel.State.FILLED;
+			grid[point.y][point.x].value = Pixel.State.FILLED;
 		}
 		return PixelGridUtils.getRandomAdjacentPoint(point, grid);
 	}

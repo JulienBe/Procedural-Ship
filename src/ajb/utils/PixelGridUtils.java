@@ -48,47 +48,30 @@ public class PixelGridUtils {
 
 	/**
 	 * Simply populates the passed in grid with {@link Pixel} objects
-	 * 
-	 * @param grid
-	 *            {@link Pixel}[][]
-	 * @param rows
-	 *            {@link int}
-	 * @param cols
-	 *            {@link int}
 	 */
 	public static void initEmptyGrid(Pixel[][] grid, int rows, int cols) {
-
-		for (int x = 0; x < rows; x++) {
-			for (int y = 0; y < cols; y++) {
+		for (int x = 0; x < rows; x++)
+			for (int y = 0; y < cols; y++)
 				grid[x][y] = new Pixel();
-			}
-		}
 	}
 
 	/**
-	 * Takes the passed in grid and returns a grid that has been floored i.e.
-	 * reduced so that rows and column with no filled pixels on them are removed
+	 * Takes the passed in grid and returns a grid that has been floored i.e. reduced so that rows and column with no filled pixels on them are removed
 	 * 
-	 * @param grid
-	 *            {@link Pixel}[][]
+	 * @param grid {@link Pixel}[][]
 	 * @return {@link Pixel}[][]
 	 */
-	public static Pixel[][] floor(Pixel[][] grid) {
-
-		Pixel[][] flooredGrid = null;
-
+	public static Pixel[][] removeEmptyCells(Pixel[][] grid) {
+		Pixel[][] flooredGrid;
 		int lastFilledRow = 0;
 		int lastFilledCol = 0;
 		int firstFilledRow = grid.length;
 		int firstFilledColumn = grid[0].length;
-
 		for (int r = 0; r < grid.length; r++) {
 			boolean empty = true;
-
 			for (int c = 0; c < grid[0].length; c++) {
 				boolean colEmpty = true;
-
-				if (grid[r][c].value != Pixel.PixelState.EMPTY) {
+				if (grid[r][c].value != Pixel.State.EMPTY) {
 					if (firstFilledRow > r)
 						firstFilledRow = r;
 					if (firstFilledColumn > c)
@@ -103,33 +86,22 @@ public class PixelGridUtils {
 				lastFilledRow = r;
 		}
 		flooredGrid = new Pixel[lastFilledRow - (firstFilledRow - 1)][lastFilledCol - (firstFilledColumn - 1)];
-
 		int newRow = 0;
-
 		for (int r = firstFilledRow; r < lastFilledRow + 1; r++) {
 			int newCol = 0;
-
 			for (int c = firstFilledColumn; c < lastFilledCol + 1; c++) {
 				flooredGrid[newRow][newCol] = grid[r][c];
 				newCol++;
 			}
-
 			newRow++;
 		}
-
 		return flooredGrid;
 	}
 
 	/**
-	 * Takes the passed in grid and returns a grid that contains the original
-	 * plus a mirrored copy
-	 * 
-	 * @param halfGrid
-	 *            {@link Pixel}[][]
-	 * @return {@link Pixel}[][]
+	 * Takes the passed in grid and returns a grid that contains the original plus a mirrored copy
 	 */
 	public static Pixel[][] mirrorCopyGridHorizontally(Pixel[][] halfGrid) {
-
 		int rows = halfGrid.length;
 		int cols = (halfGrid[0].length * 2);
 
@@ -142,7 +114,6 @@ public class PixelGridUtils {
 				fullGrid[r][(cols - 1) - c] = halfGrid[r][c];
 			}
 		}
-
 		return fullGrid;
 	}
 	
@@ -173,35 +144,26 @@ public class PixelGridUtils {
 	}	
 
 	/**
-	 * Takes the passed in grid extends it by 2 then puts a border pixel next to
-	 * every edge pixel i.e. pixels that do not have another filled pixel next
-	 * to them
-	 * 
-	 * @param grid
-	 *            {@link Pixel}[][]
-	 * @return {@link Pixel}[][]
+	 * Takes the passed in grid extends it by 2 then puts a border pixel next to every edge pixel i.e. pixels that do not have another filled pixel next to them
 	 */
 	public static Pixel[][] addBorders(Pixel[][] grid) {
-
 		Pixel[][] result = PixelGridUtils.extendGrid(grid, 2);
 
 		for (int r = 0; r < result.length; r++) {
 			for (int c = 0; c < result[0].length; c++) {
-				if (result[r][c].value == Pixel.PixelState.FILLED) {
-
+				if (result[r][c].value == Pixel.State.FILLED) {
 					// Top
-					if (result[r == 0 ? 0 : r - 1][c].value != Pixel.PixelState.FILLED && result[r == 0 ? 0 : r - 1][c].value != Pixel.PixelState.SECONDARY) 
-						result[r == 0 ? 0 : r - 1][c].value = Pixel.PixelState.BORDER;
+					if (result[r == 0 ? 0 : r - 1][c].value != Pixel.State.FILLED && result[r == 0 ? 0 : r - 1][c].value != Pixel.State.SECONDARY)
+						result[r == 0 ? 0 : r - 1][c].value = Pixel.State.BORDER;
 					// Left
-					if (result[r][c == 0 ? 0 : c - 1].value != Pixel.PixelState.FILLED && result[r][c == 0 ? 0 : c - 1].value != Pixel.PixelState.SECONDARY) 
-						result[r][c == 0 ? 0 : c - 1].value = Pixel.PixelState.BORDER;
+					if (result[r][c == 0 ? 0 : c - 1].value != Pixel.State.FILLED && result[r][c == 0 ? 0 : c - 1].value != Pixel.State.SECONDARY)
+						result[r][c == 0 ? 0 : c - 1].value = Pixel.State.BORDER;
 					// Right
-					if (result[r][c == (result[0].length / 2) - 1 ? (result[0].length / 2) - 1 : c + 1].value != Pixel.PixelState.FILLED && result[r][c == (result[0].length / 2) - 1 ? (result[0].length / 2) - 1 : c + 1].value != Pixel.PixelState.SECONDARY)
-						result[r][c == (result[0].length / 2) - 1 ? (result[0].length / 2) - 1 : c + 1].value = Pixel.PixelState.BORDER;
-
+					if (result[r][c == (result[0].length / 2) - 1 ? (result[0].length / 2) - 1 : c + 1].value != Pixel.State.FILLED && result[r][c == (result[0].length / 2) - 1 ? (result[0].length / 2) - 1 : c + 1].value != Pixel.State.SECONDARY)
+						result[r][c == (result[0].length / 2) - 1 ? (result[0].length / 2) - 1 : c + 1].value = Pixel.State.BORDER;
 					// Bottom
-					if (result[r == result.length - 1 ? result.length - 1 : r + 1][c].value != Pixel.PixelState.FILLED && result[r == result.length - 1 ? result.length - 1 : r + 1][c].value != Pixel.PixelState.SECONDARY) 
-						result[r == result.length - 1 ? result.length - 1 : r + 1][c].value = Pixel.PixelState.BORDER;
+					if (result[r == result.length - 1 ? result.length - 1 : r + 1][c].value != Pixel.State.FILLED && result[r == result.length - 1 ? result.length - 1 : r + 1][c].value != Pixel.State.SECONDARY)
+						result[r == result.length - 1 ? result.length - 1 : r + 1][c].value = Pixel.State.BORDER;
 				}
 			}
 		}
@@ -234,7 +196,7 @@ public class PixelGridUtils {
 	/**
 	 * Loops through each pixel in the grid and works out if they are surrounded
 	 * by filled pixels i.e. a straight path through other pixels until it hits
-	 * a pixel of value Pixel.PixelState.FILLED
+	 * a pixel of value Pixel.State.FILLED
 	 * 
 	 * @param grid
 	 *            {@link Pixel}[][]
@@ -242,38 +204,38 @@ public class PixelGridUtils {
 	public static void fillEmptySurroundedPixelsInGrid(Pixel[][] grid) {
 		for (int r = 0; r < grid.length; r++) {
 			for (int c = 0; c < grid[0].length; c++) {
-				if (grid[r][c].value == Pixel.PixelState.EMPTY) {
+				if (grid[r][c].value == Pixel.State.EMPTY) {
 					boolean filledPixelAbove = false;
 					boolean filledPixelBelow = false;
 					boolean filledPixelOnTheLeft = false;
 					boolean filledPixelOnTheRight = false;
 
 					for (int r1 = r - 1; r1 > 0; r1--) {	
-						if (grid[r1][c].value == Pixel.PixelState.FILLED) {
+						if (grid[r1][c].value == Pixel.State.FILLED) {
 							filledPixelAbove = true;
 							break;
 						}
 					}
 					for (int r1 = r + 1; r1 < grid.length; r1++) {
-						if (grid[r1][c].value == Pixel.PixelState.FILLED) {
+						if (grid[r1][c].value == Pixel.State.FILLED) {
 							filledPixelBelow = true;
 							break;
 						}
 					}
 					for (int c1 = c - 1; c1 > 0; c1--) {
-						if (grid[r][c1].value == Pixel.PixelState.FILLED) {
+						if (grid[r][c1].value == Pixel.State.FILLED) {
 							filledPixelOnTheLeft = true;
 							break;
 						}
 					}
 					for (int c1 = c + 1; c1 < grid[0].length; c1++) {
-						if (grid[r][c1].value == Pixel.PixelState.FILLED) {
+						if (grid[r][c1].value == Pixel.State.FILLED) {
 							filledPixelOnTheRight = true;
 							break;
 						}
 					}
 					if (filledPixelAbove && filledPixelBelow && filledPixelOnTheLeft && filledPixelOnTheRight) {
-						grid[r][c].value = Pixel.PixelState.SECONDARY;
+						grid[r][c].value = Pixel.State.SECONDARY;
 					}
 				}
 			}
@@ -283,8 +245,8 @@ public class PixelGridUtils {
 	/**
 	 * Loops through each pixel in the grid and works out if they are surrounded
 	 * by filled pixels i.e. a straight path through other pixels until it hits
-	 * a pixel of value Pixel.PixelState.FILLED without going over any pixels with value
-	 * Pixel.PixelState.EMPTY
+	 * a pixel of value Pixel.State.FILLED without going over any pixels with value
+	 * Pixel.State.EMPTY
 	 * 
 	 * @param grid
 	 *            {@link Pixel}[][]
@@ -294,7 +256,7 @@ public class PixelGridUtils {
 		for (int r = 0; r < grid.length; r++) {
 			for (int c = 0; c < grid[0].length; c++) {
 
-				if (grid[r][c].value == Pixel.PixelState.SECONDARY) {
+				if (grid[r][c].value == Pixel.State.SECONDARY) {
 
 					boolean filledPixelAbove = false;
 					boolean filledPixelBelow = false;
@@ -302,40 +264,40 @@ public class PixelGridUtils {
 					boolean filledPixelOnTheRight = false;
 
 					for (int r1 = r - 1; r1 > 0; r1--) {
-						if (grid[r1][c].value == Pixel.PixelState.EMPTY) {
+						if (grid[r1][c].value == Pixel.State.EMPTY) {
 							filledPixelAbove = false;
 							break;
-						} else if (grid[r1][c].value == Pixel.PixelState.FILLED) {
+						} else if (grid[r1][c].value == Pixel.State.FILLED) {
 							filledPixelAbove = true;
 							break;
 						}
 					}
 
 					for (int r1 = r + 1; r1 < grid.length; r1++) {
-						if (grid[r1][c].value == Pixel.PixelState.EMPTY) {
+						if (grid[r1][c].value == Pixel.State.EMPTY) {
 							filledPixelBelow = false;
 							break;
-						} else if (grid[r1][c].value == Pixel.PixelState.FILLED) {
+						} else if (grid[r1][c].value == Pixel.State.FILLED) {
 							filledPixelBelow = true;
 							break;
 						}
 					}
 
 					for (int c1 = c - 1; c1 > 0; c1--) {
-						if (grid[r][c1].value == Pixel.PixelState.EMPTY) {
+						if (grid[r][c1].value == Pixel.State.EMPTY) {
 							filledPixelOnTheLeft = false;
 							break;
-						} else if (grid[r][c1].value == Pixel.PixelState.FILLED) {
+						} else if (grid[r][c1].value == Pixel.State.FILLED) {
 							filledPixelOnTheLeft = true;
 							break;
 						}
 					}
 
 					for (int c1 = c + 1; c1 < grid[0].length; c1++) {
-						if (grid[r][c1].value == Pixel.PixelState.EMPTY) {
+						if (grid[r][c1].value == Pixel.State.EMPTY) {
 							filledPixelOnTheLeft = false;
 							break;
-						} else if (grid[r][c1].value == Pixel.PixelState.FILLED) {
+						} else if (grid[r][c1].value == Pixel.State.FILLED) {
 							filledPixelOnTheRight = true;
 							break;
 						}
@@ -343,14 +305,14 @@ public class PixelGridUtils {
 
 					if (filledPixelAbove && filledPixelBelow && filledPixelOnTheLeft && filledPixelOnTheRight) {
 
-						grid[r][c].value = Pixel.PixelState.SECONDARY;
+						grid[r][c].value = Pixel.State.SECONDARY;
 
 						int random = RandomInt.anyRandomIntRange(1, 100);
 
 						if (random < 10) {
-							grid[r][c].value = Pixel.PixelState.BORDER;
+							grid[r][c].value = Pixel.State.BORDER;
 						} else if (random > 90) {
-							grid[r][c].value = Pixel.PixelState.FILLED;
+							grid[r][c].value = Pixel.State.FILLED;
 						}
 					}
 				}
@@ -369,7 +331,7 @@ public class PixelGridUtils {
 
 			Pixel possiblePixel = grid[x][y];
 
-			if (possiblePixel.value == Pixel.PixelState.FILLED) {
+			if (possiblePixel.value == Pixel.State.FILLED) {
 				point = new Point();
 				point.x = x;
 				point.y = y;
@@ -426,7 +388,7 @@ public class PixelGridUtils {
 			for (int c = 0; c < grid[0].length; c++) {
 				boolean colEmpty = true;
 
-				if (grid[r][c].value != Pixel.PixelState.EMPTY) {
+				if (grid[r][c].value != Pixel.State.EMPTY) {
 
 					if (firstFilledColumn > c) {
 						firstFilledColumn = c;
@@ -471,7 +433,7 @@ public class PixelGridUtils {
 
 			for (int c = 0; c < grid[0].length; c++) {
 
-				if (grid[r][c].value != Pixel.PixelState.EMPTY) {
+				if (grid[r][c].value != Pixel.State.EMPTY) {
 					if (firstFilledRow > r) {
 						firstFilledRow = r;
 					}
@@ -535,10 +497,10 @@ public class PixelGridUtils {
 		for (int r = 0; r < grid.length; r++) {
 			for (int c = 0; c < grid[0].length; c++) {
 
-				if (grid[r][c].value != Pixel.PixelState.EMPTY && 
-						grid[r][c].value != Pixel.PixelState.BORDER) {
+				if (grid[r][c].value != Pixel.State.EMPTY &&
+						grid[r][c].value != Pixel.State.BORDER) {
 					
-					Pixel.PixelState pixelValue = grid[r][c].value;
+					Pixel.State pixelValue = grid[r][c].value;
 	
 					int noOfSamePixelsAbove = 0;
 					int noOfSamePixelsBelow = 0;
@@ -652,17 +614,17 @@ public class PixelGridUtils {
 		return newPoint;
 	}
 	
-	public static void removePixelsByType(Pixel[][] grid, Pixel.PixelState type) {
+	public static void removePixelsByType(Pixel[][] grid, Pixel.State type) {
 		for (int r = 0; r < grid.length; r++) {
 			for (int c = 0; c < grid[0].length; c++) {
 				if (grid[r][c].value == type) {
-					grid[r][c].value = Pixel.PixelState.EMPTY;
+					grid[r][c].value = Pixel.State.EMPTY;
 				}
 			}
 		}
 	}
 	
-	public static int countPixelsByType(Pixel[][] grid, Pixel.PixelState type) {
+	public static int countPixelsByType(Pixel[][] grid, Pixel.State type) {
 		
 		int result = 0;
 		
