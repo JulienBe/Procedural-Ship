@@ -554,22 +554,31 @@ public class PixelGridUtils {
 	}
 
     private static Point[] getNeightboursPoints(Point point, Pixel[][] grid) {
-        Point pointTop = new Point(point.x - 1, point.y);
-        Point pointBottom = new Point(point.x + 1, point.y);
-        Point pointLeft = new Point(point.x, point.y - 1);
-        Point pointRight = new Point(point.x, point.y + 1);
+        Point[] neighbours = new Point[8];
+        Point top = new Point(          point.x - 1,    point.y);
+        Point topLeft = new Point(      point.x - 1,    point.y - 1);
+        Point topRight = new Point(     point.x - 1,    point.y + 1);
+        Point bottom = new Point(       point.x + 1,    point.y);
+        Point bottomLeft = new Point(   point.x + 1,    point.y - 1);
+        Point bottomRight = new Point(  point.x + 1,    point.y + 1);
+        Point left = new Point(         point.x,        point.y - 1);
+        Point right = new Point(        point.x,        point.y + 1);
 
-        Point[] neighbours = new Point[4];
-        if (PixelGridUtils.isPointWithinGrid(pointTop, grid))
-            neighbours[0] = pointTop;
-        if (PixelGridUtils.isPointWithinGrid(pointBottom, grid))
-            neighbours[1] = pointBottom;
-        if (PixelGridUtils.isPointWithinGrid(pointLeft, grid))
-            neighbours[2] = pointLeft;
-        if (PixelGridUtils.isPointWithinGrid(pointRight, grid))
-            neighbours[3] = pointRight;
+        assignIfValid(0, top, neighbours, grid);
+        assignIfValid(1, bottom, neighbours, grid);
+        assignIfValid(2, left, neighbours, grid);
+        assignIfValid(3, right, neighbours, grid);
+        assignIfValid(4, topLeft, neighbours, grid);
+        assignIfValid(5, topRight, neighbours, grid);
+        assignIfValid(6, bottomLeft, neighbours, grid);
+        assignIfValid(7, bottomRight, neighbours, grid);
 
         return neighbours;
+    }
+
+    private static void assignIfValid(int index, Point point, Point[] points, Pixel[][] grid) {
+        if (isPointWithinGrid(point, grid))
+            points[index] = point;
     }
 
     public static void removePixelsByType(Pixel[][] grid, Pixel.State type) {
