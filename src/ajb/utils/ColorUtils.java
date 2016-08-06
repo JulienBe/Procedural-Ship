@@ -16,7 +16,6 @@ package ajb.utils;
  * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, 
  * MA  02111-1307, USA.
  */
-//package no.geosoft.cc.color.ui;
 
 import java.awt.Color;
 

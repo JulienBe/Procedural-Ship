@@ -1,16 +1,26 @@
 package ajb.factory;
 
-import java.awt.Point;
+import java.awt.*;
 
 import ajb.domain.Parameters;
 import ajb.domain.Pixel;
 import ajb.domain.AssetSize;
 import ajb.domain.Steps;
 import ajb.random.Rng;
+import ajb.utils.Metric;
 import ajb.utils.PixelGridUtils;
 
 public class VesselGeneratorFactory {
 
+	public final Metric timeCreate = new Metric(),
+            timeRemoveEmpty1 = new Metric(),
+            timeRemoveEmpty2 = new Metric(),
+            timeMirror = new Metric(),
+            timeAddBorders = new Metric(),
+            timeFillEmpty = new Metric(),
+            timeDepth = new Metric(),
+            timeNoise = new Metric(),
+            timeAddExtra = new Metric();
 	private int rows = 0;
 	private int cols = 0;
 
@@ -18,25 +28,52 @@ public class VesselGeneratorFactory {
 		rows = size.row;
         cols = size.col;
 
+        timeCreate.start();
 		Pixel[][] grid = createBaseGrid(size, steps, parameters);
+        timeCreate.end();
+
+        timeAddExtra.start();
 		addExtras(grid, steps, parameters);
+        timeAddExtra.end();
 
+        timeRemoveEmpty1.start();
 		grid = PixelGridUtils.removeEmptyCells(grid);
+        timeRemoveEmpty1.end();
+
+        timeMirror.start();
 		grid = PixelGridUtils.mirrorCopyGridHorizontally(grid);
-		grid = PixelGridUtils.addBorders(grid);
-		grid = PixelGridUtils.removeEmptyCells(grid);
-		PixelGridUtils.fillEmptySurroundedPixelsInGrid(grid);
-		PixelGridUtils.addNoiseToFlatPixels(grid, parameters);
-		PixelGridUtils.setPixelDepth(grid);
+        timeMirror.end();
 
-		return validateGrid(grid, parameters) ? grid : create(size, parameters, steps);
+        timeAddBorders.start();
+		grid = PixelGridUtils.addBorders(grid);
+        timeAddBorders.end();
+
+        timeRemoveEmpty2.start();
+		grid = PixelGridUtils.removeEmptyCells(grid);
+        timeRemoveEmpty2.end();
+
+        timeFillEmpty.start();
+		PixelGridUtils.fillEmptySurroundedPixelsInGrid(grid);
+        timeFillEmpty.end();
+
+        timeDepth.start();
+		PixelGridUtils.setPixelDepth(grid);
+        timeDepth.end();
+
+
+		if (validateGrid(grid, parameters)) {
+            timeNoise.start();
+            PixelGridUtils.addNoiseToFlatPixels(grid, parameters);
+            timeNoise.end();
+			return grid;
+		} else {
+			return create(size, parameters, steps);
+		}
 	}
 
 	private boolean validateGrid(Pixel[][] grid, Parameters parameters) {
 		boolean result = true;
-
-		int noOfFilledPixels = 0;
-		int noOfSecondaryPixels = 0;
+		int noOfFilledPixels = 0, noOfSecondaryPixels = 0;
 
 		for (int x = 0; x < grid.length; x++) {
 			for (int y = 0; y < grid[0].length; y++) {
@@ -54,7 +91,7 @@ public class VesselGeneratorFactory {
         if (colorPercentage > parameters.colorMaxPercentage || colorPercentage < parameters.colorMinPercentage)
 			return false;
 
-        System.out.println(colorPercentage);
+        System.out.println(grid.hashCode());
 		return result;
 	}
 

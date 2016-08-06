@@ -50,6 +50,15 @@ public class CreateImageFullOfVessels {
 			frame.pack();
 			frame.setVisible(true);
 //		}
+		System.out.println("================");
+		System.out.println("Time create" + factory.timeCreate);
+		System.out.println("Time noise" + factory.timeNoise);
+		System.out.println("Time remove empty 1" + factory.timeRemoveEmpty1);
+		System.out.println("Time remove empty 2" + factory.timeRemoveEmpty2);
+		System.out.println("Time mirror" + factory.timeMirror);
+		System.out.println("Time depth" + factory.timeDepth);
+		System.out.println("Time add borders" + factory.timeAddBorders);
+		System.out.println("Time fill empty" + factory.timeFillEmpty);
 	}
 
 }
