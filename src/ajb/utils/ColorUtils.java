@@ -250,6 +250,6 @@ public class ColorUtils {
 		colours[3] = yellow;
 		colours[4] = purple;				
 		
-		return colours[Rng.anyRandomIntRange(0, 4)];
+		return colours[Rng.intBetween(0, 4)];
 	}
 }

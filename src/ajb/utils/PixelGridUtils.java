@@ -3,6 +3,7 @@ package ajb.utils;
 import java.awt.Point;
 import java.util.List;
 
+import ajb.domain.Parameters;
 import ajb.domain.Pixel;
 import ajb.random.Rng;
 
@@ -249,13 +250,10 @@ public class PixelGridUtils {
 	 * @param grid
 	 *            {@link Pixel}[][]
 	 */
-	public static void addNoiseToFlatPixels(Pixel[][] grid) {
-
+	public static void addNoiseToFlatPixels(Pixel[][] grid, Parameters param) {
 		for (int r = 0; r < grid.length; r++) {
 			for (int c = 0; c < grid[0].length; c++) {
-
 				if (grid[r][c].value == Pixel.State.SECONDARY) {
-
 					boolean filledPixelAbove = false;
 					boolean filledPixelBelow = false;
 					boolean filledPixelOnTheLeft = false;
@@ -300,32 +298,39 @@ public class PixelGridUtils {
 							break;
 						}
 					}
+                    setNoiseValue(grid, param, r, c, filledPixelAbove, filledPixelBelow, filledPixelOnTheLeft, filledPixelOnTheRight);
 
-					if (filledPixelAbove && filledPixelBelow && filledPixelOnTheLeft && filledPixelOnTheRight) {
 
-						grid[r][c].value = Pixel.State.SECONDARY;
-
-						int random = Rng.anyRandomIntRange(1, 100);
-
-						if (random < 10) {
-							grid[r][c].value = Pixel.State.BORDER;
-						} else if (random > 90) {
-							grid[r][c].value = Pixel.State.FILLED;
-						}
-					}
-				}
+                }
 			}
 		}
 	}
 
-	public static Point getRandomFilledPoint(Pixel[][] grid) {
+    private static void setNoiseValue(Pixel[][] grid, Parameters param, int r, int c, boolean filledPixelAbove, boolean filledPixelBelow, boolean filledPixelOnTheLeft, boolean filledPixelOnTheRight) {
+        /**
+         * TODO : Rework to make it more flexible
+         */
+        if (filledPixelAbove && filledPixelBelow && filledPixelOnTheLeft && filledPixelOnTheRight) {
+int secondary = Rng.anInt(param.greyNoisePercentage);
+int border = Rng.anInt(param.blackNoisePercentage);
+int filled = Rng.anInt(param.colorNoisePercentage);
+if (secondary > border && secondary > filled)
+                grid[r][c].value = Pixel.State.SECONDARY;
+if (border > secondary && border > filled)
+                grid[r][c].value = Pixel.State.BORDER;
+if (filled > secondary && filled > border)
+                grid[r][c].value = Pixel.State.FILLED;
+        }
+    }
+
+    public static Point getRandomFilledPoint(Pixel[][] grid) {
 
 		Point point = null;
 
 		while (point == null) {
 
-			int x = Rng.anyRandomIntRange(1, grid.length - 1);
-			int y = Rng.anyRandomIntRange(1, grid[0].length - 1);
+			int x = Rng.intBetween(1, grid.length - 1);
+			int y = Rng.intBetween(1, grid[0].length - 1);
 
 			Pixel possiblePixel = grid[x][y];
 
@@ -538,13 +543,13 @@ public class PixelGridUtils {
 		}
 	}
 	
-	public static Point getRandomAdjacentPoint(Point point, Pixel[][] grid) {
+	public static Point getRandomAdjacentPoint(Point point, Pixel[][] grid, Parameters parameters) {
         Point[] neighbours = getNeightboursPoints(point, grid);
 
 		// go to a random neighbour
-		Point newPoint = Rng.aBoolean() ? neighbours[previousNeighbour] : null;
+		Point newPoint = Rng.aFloat() < parameters.tendancyToKeepLine ? neighbours[previousNeighbour] : null;
 		while (newPoint == null) {
-			int ri = Rng.anyRandomIntRange(0, neighbours.length);
+			int ri = Rng.intBetween(0, neighbours.length);
 			if (neighbours[ri] != null) {
                 newPoint = neighbours[ri];
                 previousNeighbour = ri;

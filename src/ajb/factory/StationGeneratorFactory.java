@@ -2,6 +2,7 @@ package ajb.factory;
 
 import java.awt.Point;
 
+import ajb.domain.Parameters;
 import ajb.domain.Pixel;
 import ajb.domain.AssetSize;
 import ajb.random.Rng;
@@ -28,7 +29,7 @@ public class StationGeneratorFactory {
 			cols = 300;
 		}		
 		
-		Pixel[][] grid = createBaseGrid(size);
+		Pixel[][] grid = createBaseGrid(size, Parameters.MINE);
 
 		grid = PixelGridUtils.removeEmptyCells(grid);
 		grid = PixelGridUtils.mirrorCopyGridHorizontally(grid);
@@ -36,7 +37,7 @@ public class StationGeneratorFactory {
 		grid = PixelGridUtils.addBorders(grid);
 		grid = PixelGridUtils.removeEmptyCells(grid);
 		PixelGridUtils.fillEmptySurroundedPixelsInGrid(grid);
-		PixelGridUtils.addNoiseToFlatPixels(grid);			
+		PixelGridUtils.addNoiseToFlatPixels(grid, Parameters.MINE);
 		PixelGridUtils.setPixelDepth(grid);		
 
 		if (validateGrid(grid)) {		
@@ -74,15 +75,14 @@ public class StationGeneratorFactory {
 		return result;
 	}
 	
-	private Pixel[][] createBaseGrid(AssetSize size) {
-
+	private Pixel[][] createBaseGrid(AssetSize size, Parameters param) {
 		Pixel[][] grid = new Pixel[rows][cols];
 		PixelGridUtils.initEmptyGrid(grid, rows, cols);
 
 		Point point = new Point(rows -1, cols - 1);
 
-		int steps = Rng.anyRandomIntRange(calculateMinNoOfSteps(size), calculateMaxNoOfSteps(size));
-		int subSteps = Rng.anyRandomIntRange(calculateMinNoOfSubSteps(size), calculateMaxNoOfSubSteps(size));
+		int steps = Rng.intBetween(calculateMinNoOfSteps(size), calculateMaxNoOfSteps(size));
+		int subSteps = Rng.intBetween(calculateMinNoOfSubSteps(size), calculateMaxNoOfSubSteps(size));
 
 		for (int i = 0; i < steps; i++) {
 
@@ -98,24 +98,19 @@ public class StationGeneratorFactory {
 				}
 			}
 
-			for (int y = 0; y < subSteps; y++) {
-				point = processPoint(point, grid);
-			}
-
+			for (int y = 0; y < subSteps; y++)
+				point = processPoint(point, grid, param);
 			point = null;
 		}
-
 		return grid;
 	}
 
-	private Point processPoint(Point point, Pixel[][] grid) {
-
+	private Point processPoint(Point point, Pixel[][] grid, Parameters param) {
 		if (grid[point.x][point.y].value == Pixel.State.EMPTY) {
 			grid[point.x][point.y].value = Pixel.State.FILLED;
 			grid[point.y][point.x].value = Pixel.State.FILLED;
 		}
-
-		return PixelGridUtils.getRandomAdjacentPoint(point, grid);
+		return PixelGridUtils.getRandomAdjacentPoint(point, grid, param);
 	}
 	
 	private int calculateMinNoOfSteps(AssetSize size) {

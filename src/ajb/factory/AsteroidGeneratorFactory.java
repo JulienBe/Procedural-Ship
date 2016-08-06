@@ -2,6 +2,7 @@ package ajb.factory;
 
 import java.awt.Point;
 
+import ajb.domain.Parameters;
 import ajb.domain.Pixel;
 import ajb.domain.AssetSize;
 import ajb.utils.PixelGridUtils;
@@ -27,7 +28,7 @@ public class AsteroidGeneratorFactory {
 			cols = 300;
 		}		
 		
-		Pixel[][] grid = createBaseGrid(size);
+		Pixel[][] grid = createBaseGrid(size, Parameters.MINE);
 		grid = PixelGridUtils.removeEmptyCells(grid);
 		grid = PixelGridUtils.addBorders(grid);
 		grid = PixelGridUtils.removeEmptyCells(grid);
@@ -69,7 +70,7 @@ public class AsteroidGeneratorFactory {
 		return result;
 	}
 
-	private Pixel[][] createBaseGrid(AssetSize size) {
+	private Pixel[][] createBaseGrid(AssetSize size, Parameters param) {
 
 		Pixel[][] grid = new Pixel[rows][cols];
 		PixelGridUtils.initEmptyGrid(grid, rows, cols);
@@ -81,20 +82,20 @@ public class AsteroidGeneratorFactory {
 
 		for (int i = 0; i < steps; i++) {
 			for (int y = 0; y < subSteps; y++) {
-				point = processPoint(point, grid);
+				point = processPoint(point, grid, param);
 			}
 		}
 
 		return grid;
 	}
 
-	private Point processPoint(Point point, Pixel[][] grid) {
+	private Point processPoint(Point point, Pixel[][] grid, Parameters param) {
 
 		if (grid[point.x][point.y].value == Pixel.State.EMPTY) {
 			grid[point.x][point.y].value = Pixel.State.FILLED;
 		}
 
-		return PixelGridUtils.getRandomAdjacentPoint(point, grid);
+		return PixelGridUtils.getRandomAdjacentPoint(point, grid, param);
 	}
 	
 	private int calculateNoOfSteps(AssetSize size) {

@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+import ajb.domain.Parameters;
 import ajb.domain.Pixel;
 import ajb.factory.ConsoleGeneratorFactory;
 import ajb.utils.ImageUtils;
@@ -22,7 +23,7 @@ public class CreateImageFullOfConsoles {
 		// create X console and add to our list
 		for (int i = 0; i < 240; i++) {
 
-			Pixel[][] grid = factory.create();
+			Pixel[][] grid = factory.create(Parameters.MINE);
 
 			// add grid to list
 			grids.add(grid);

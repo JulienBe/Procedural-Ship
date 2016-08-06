@@ -4,7 +4,13 @@ public class Pixel {
 
 	public enum State {
         EMPTY(0),
+        /**
+         * Greyish one
+         */
         FILLED(1),
+        /**
+         * Black one
+         */
         BORDER(2),
         /**
          * A secondary pixel has the secondary color, that is to say, the bright color

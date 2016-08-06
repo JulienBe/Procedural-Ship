@@ -2,6 +2,7 @@ package ajb.factory;
 
 import java.awt.Point;
 
+import ajb.domain.Parameters;
 import ajb.domain.Pixel;
 import ajb.utils.PixelGridUtils;
 
@@ -10,18 +11,18 @@ public class ConsoleGeneratorFactory {
 	private final int ROWS = 9;
 	private final int COLS = 9;
 
-	public Pixel[][] create() {
-		Pixel[][] grid = createBaseGrid();
+	public Pixel[][] create(Parameters param) {
+		Pixel[][] grid = createBaseGrid(Parameters.MINE);
 
 		grid = PixelGridUtils.mirrorCopyGridHorizontally(grid);
 		grid = PixelGridUtils.mirrorCopyGridVertically(grid);
 		grid = PixelGridUtils.mirrorCopyGridHorizontally(grid);
 		grid = PixelGridUtils.addBorders(grid);
 		PixelGridUtils.fillEmptySurroundedPixelsInGrid(grid);
-		PixelGridUtils.addNoiseToFlatPixels(grid);			
+		PixelGridUtils.addNoiseToFlatPixels(grid, param);
 		PixelGridUtils.setPixelDepth(grid);		
 
-		return validateGrid(grid) ? grid : create();
+		return validateGrid(grid) ? grid : create(param);
 	}
 
 	private boolean validateGrid(Pixel[][] grid) {
@@ -54,7 +55,7 @@ public class ConsoleGeneratorFactory {
 		return result;
 	}
 	
-	private Pixel[][] createBaseGrid() {
+	private Pixel[][] createBaseGrid(Parameters param) {
 		Pixel[][] grid = new Pixel[ROWS][COLS];
 		PixelGridUtils.initEmptyGrid(grid, ROWS, COLS);
 		Point point = new Point(ROWS -1, COLS - 1);
@@ -74,17 +75,17 @@ public class ConsoleGeneratorFactory {
 				}
 			}
 			for (int y = 0; y < subSteps; y++)
-				point = processPoint(point, grid);
+				point = processPoint(point, grid, param);
 			point = null;
 		}
 		return grid;
 	}
 
-	private Point processPoint(Point point, Pixel[][] grid) {
+	private Point processPoint(Point point, Pixel[][] grid, Parameters param) {
 		if (grid[point.x][point.y].value == Pixel.State.EMPTY) {
 			grid[point.x][point.y].value = Pixel.State.FILLED;
 			grid[point.y][point.x].value = Pixel.State.FILLED;
 		}
-		return PixelGridUtils.getRandomAdjacentPoint(point, grid);
+		return PixelGridUtils.getRandomAdjacentPoint(point, grid, param);
 	}
 }

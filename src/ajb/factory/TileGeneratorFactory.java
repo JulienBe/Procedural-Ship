@@ -2,6 +2,7 @@ package ajb.factory;
 
 import java.awt.Point;
 
+import ajb.domain.Parameters;
 import ajb.domain.Pixel;
 import ajb.utils.PixelGridUtils;
 
@@ -12,7 +13,7 @@ public class TileGeneratorFactory {
 
 	public Pixel[][] create() {
 
-		Pixel[][] grid = createBaseGrid();
+		Pixel[][] grid = createBaseGrid(Parameters.MINE);
 		
 		grid = PixelGridUtils.mirrorCopyGridHorizontally(grid);
 		grid = PixelGridUtils.mirrorCopyGridVertically(grid);
@@ -48,8 +49,7 @@ public class TileGeneratorFactory {
 		return result;
 	}
 	
-	private Pixel[][] createBaseGrid() {
-
+	private Pixel[][] createBaseGrid(Parameters param) {
 		Pixel[][] grid = new Pixel[ROWS][COLS];
 		PixelGridUtils.initEmptyGrid(grid, ROWS, COLS);
 
@@ -61,7 +61,7 @@ public class TileGeneratorFactory {
 			Point point = new Point(ROWS -1, COLS - 1);
 
 			for (int y = 0; y < subSteps; y++) {
-				point = processPoint(point, grid);
+				point = processPoint(point, grid, param);
 			}
 
 		}
@@ -69,13 +69,13 @@ public class TileGeneratorFactory {
 		return grid;
 	}
 
-	private Point processPoint(Point point, Pixel[][] grid) {
+	private Point processPoint(Point point, Pixel[][] grid, Parameters param) {
 
 		if (grid[point.x][point.y].value == Pixel.State.EMPTY) {
 			grid[point.x][point.y].value = Pixel.State.FILLED;
 			grid[point.y][point.x].value = Pixel.State.FILLED;
 		}
 
-		return PixelGridUtils.getRandomAdjacentPoint(point, grid);
+		return PixelGridUtils.getRandomAdjacentPoint(point, grid, param);
 	}
 }
