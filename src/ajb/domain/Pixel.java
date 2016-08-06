@@ -16,6 +16,9 @@ public class Pixel {
         State(int i) { value = i; }
     }
 
+    /**
+     * Default is {@link State.EMPTY}
+     */
 	public State value = State.EMPTY;
 	public int depth = 0;
 

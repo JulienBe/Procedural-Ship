@@ -126,7 +126,6 @@ public class PixelGridUtils {
 	 * @return {@link Pixel}[][]
 	 */
 	public static Pixel[][] mirrorCopyGridVertically(Pixel[][] halfGrid) {
-
 		int rows = (halfGrid.length * 2);
 		int cols = halfGrid[0].length;
 
@@ -184,12 +183,9 @@ public class PixelGridUtils {
 		Pixel[][] extendedGrid = new Pixel[grid.length + extendAmount][grid[0].length + extendAmount];
 		initEmptyGrid(extendedGrid, grid.length + extendAmount, grid[0].length + extendAmount);
 
-		for (int r = 0; r < grid.length; r++) {
-			for (int c = 0; c < grid[0].length; c++) {
+		for (int r = 0; r < grid.length; r++)
+			for (int c = 0; c < grid[0].length; c++)
 				extendedGrid[r + (extendAmount / 2)][c + (extendAmount / 2)] = grid[r][c];
-			}
-		}
-		
 		return extendedGrid;
 	}
 
@@ -541,101 +537,50 @@ public class PixelGridUtils {
 	}
 	
 	public static Point getRandomAdjacentPoint(Point point, Pixel[][] grid) {
-
-		// top
-		Point pointTop = new Point(point.x - 1, point.y);
-
-		// bottom
-		Point pointBottom = new Point(point.x + 1, point.y);
-
-		// left
-		Point pointLeft = new Point(point.x, point.y - 1);
-
-		// right
-		Point pointRight = new Point(point.x, point.y + 1);
-
-		boolean pointTopValid = PixelGridUtils.isPointWithinGrid(pointTop, grid);
-		boolean pointBottomValid = PixelGridUtils.isPointWithinGrid(pointBottom, grid);
-		boolean pointLeftValid = PixelGridUtils.isPointWithinGrid(pointLeft, grid);
-		boolean pointRightValid = PixelGridUtils.isPointWithinGrid(pointRight, grid);
-
-		int noOfValidNeighbours = 0;
-
-		if (pointTopValid) {
-			noOfValidNeighbours++;
-		}
-
-		if (pointBottomValid) {
-			noOfValidNeighbours++;
-		}
-
-		if (pointLeftValid) {
-			noOfValidNeighbours++;
-		}
-
-		if (pointRightValid) {
-			noOfValidNeighbours++;
-		}
-
-		Point[] neighbours = new Point[noOfValidNeighbours + 1];
-
-		int index = 0;
-		if (pointTopValid) {
-			neighbours[index] = pointTop;
-			index++;
-		}
-
-		if (pointBottomValid) {
-			neighbours[index] = pointBottom;
-			index++;
-		}
-
-		if (pointLeftValid) {
-			neighbours[index] = pointLeft;
-			index++;
-		}
-
-		if (pointRightValid) {
-			neighbours[index] = pointRight;
-			index++;
-		}
+        Point[] neighbours = getNeightboursPoints(point, grid);
 
 		// go to a random neighbour
 		Point newPoint = null;
-
 		while (newPoint == null) {
-			int ri = RandomInt.anyRandomIntRange(0, neighbours.length - 1);
-
-			if (neighbours[ri] != null) {
+			int ri = RandomInt.anyRandomIntRange(0, neighbours.length);
+			if (neighbours[ri] != null)
 				newPoint = neighbours[ri];
-			}
 		}
-
 		return newPoint;
 	}
-	
-	public static void removePixelsByType(Pixel[][] grid, Pixel.State type) {
-		for (int r = 0; r < grid.length; r++) {
-			for (int c = 0; c < grid[0].length; c++) {
-				if (grid[r][c].value == type) {
+
+    private static Point[] getNeightboursPoints(Point point, Pixel[][] grid) {
+        Point pointTop = new Point(point.x - 1, point.y);
+        Point pointBottom = new Point(point.x + 1, point.y);
+        Point pointLeft = new Point(point.x, point.y - 1);
+        Point pointRight = new Point(point.x, point.y + 1);
+
+        Point[] neighbours = new Point[4];
+        if (PixelGridUtils.isPointWithinGrid(pointTop, grid))
+            neighbours[0] = pointTop;
+        if (PixelGridUtils.isPointWithinGrid(pointBottom, grid))
+            neighbours[1] = pointBottom;
+        if (PixelGridUtils.isPointWithinGrid(pointLeft, grid))
+            neighbours[2] = pointLeft;
+        if (PixelGridUtils.isPointWithinGrid(pointRight, grid))
+            neighbours[3] = pointRight;
+
+        return neighbours;
+    }
+
+    public static void removePixelsByType(Pixel[][] grid, Pixel.State type) {
+		for (int r = 0; r < grid.length; r++)
+			for (int c = 0; c < grid[0].length; c++)
+				if (grid[r][c].value == type)
 					grid[r][c].value = Pixel.State.EMPTY;
-				}
-			}
-		}
 	}
 	
 	public static int countPixelsByType(Pixel[][] grid, Pixel.State type) {
-		
 		int result = 0;
-		
-		for (int r = 0; r < grid.length; r++) {
-			for (int c = 0; c < grid[0].length; c++) {
-				if (grid[r][c].value == type) {
+		for (int r = 0; r < grid.length; r++)
+			for (int c = 0; c < grid[0].length; c++)
+				if (grid[r][c].value == type)
 					result++;
-				}
-			}
-		}
-		
 		return result;
 	}	
 }
