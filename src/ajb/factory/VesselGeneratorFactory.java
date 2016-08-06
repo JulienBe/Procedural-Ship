@@ -6,7 +6,7 @@ import ajb.domain.Parameters;
 import ajb.domain.Pixel;
 import ajb.domain.AssetSize;
 import ajb.domain.Steps;
-import ajb.random.RandomInt;
+import ajb.random.Rng;
 import ajb.utils.PixelGridUtils;
 
 public class VesselGeneratorFactory {
@@ -64,8 +64,8 @@ public class VesselGeneratorFactory {
 
 		Point point = new Point(rows / 2, cols - 1);
 
-		int steps = RandomInt.anyRandomIntRange(stepsConst.minSubStep, stepsConst.maxSubSteps);
-		int subSteps = RandomInt.anyRandomIntRange(stepsConst.minSteps, stepsConst.maxSteps);
+		int steps = Rng.anyRandomIntRange(stepsConst.minSubStep, stepsConst.maxSubSteps);
+		int subSteps = Rng.anyRandomIntRange(stepsConst.minSteps, stepsConst.maxSteps);
 
 		for (int i = 0; i < steps; i++) {
 			if (point == null) {
@@ -87,8 +87,8 @@ public class VesselGeneratorFactory {
 	}
 
 	private void addExtras(Pixel[][] grid, Steps stepsConst) {
-		int steps = RandomInt.anyRandomIntRange(stepsConst.minSteps - 10, stepsConst.maxSteps - 10);
-		int subSteps = RandomInt.anyRandomIntRange(stepsConst.minSubStep - 10, stepsConst.maxSubSteps - 10);
+		int steps = Rng.anyRandomIntRange(stepsConst.minSteps - 10, stepsConst.maxSteps - 10);
+		int subSteps = Rng.anyRandomIntRange(stepsConst.minSubStep - 10, stepsConst.maxSubSteps - 10);
 
 		for (int i = 0; i < steps; i++) {
 			Point point = PixelGridUtils.getRandomFilledPoint(grid);

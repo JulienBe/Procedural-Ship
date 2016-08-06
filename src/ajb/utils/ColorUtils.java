@@ -20,7 +20,7 @@ package ajb.utils;
 
 import java.awt.Color;
 
-import ajb.random.RandomInt;
+import ajb.random.Rng;
 
 /**
  * Common color utilities.
@@ -250,6 +250,6 @@ public class ColorUtils {
 		colours[3] = yellow;
 		colours[4] = purple;				
 		
-		return colours[RandomInt.anyRandomIntRange(0, 4)];
+		return colours[Rng.anyRandomIntRange(0, 4)];
 	}
 }

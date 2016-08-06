@@ -4,9 +4,11 @@ import java.awt.Point;
 import java.util.List;
 
 import ajb.domain.Pixel;
-import ajb.random.RandomInt;
+import ajb.random.Rng;
 
 public class PixelGridUtils {
+
+    private static int previousNeighbour = 0;
 
 	/**
 	 * Returns true if the passed in point is within the boundaries of the passed in grid i.e.
@@ -303,7 +305,7 @@ public class PixelGridUtils {
 
 						grid[r][c].value = Pixel.State.SECONDARY;
 
-						int random = RandomInt.anyRandomIntRange(1, 100);
+						int random = Rng.anyRandomIntRange(1, 100);
 
 						if (random < 10) {
 							grid[r][c].value = Pixel.State.BORDER;
@@ -322,8 +324,8 @@ public class PixelGridUtils {
 
 		while (point == null) {
 
-			int x = RandomInt.anyRandomIntRange(1, grid.length - 1);
-			int y = RandomInt.anyRandomIntRange(1, grid[0].length - 1);
+			int x = Rng.anyRandomIntRange(1, grid.length - 1);
+			int y = Rng.anyRandomIntRange(1, grid[0].length - 1);
 
 			Pixel possiblePixel = grid[x][y];
 
@@ -540,11 +542,13 @@ public class PixelGridUtils {
         Point[] neighbours = getNeightboursPoints(point, grid);
 
 		// go to a random neighbour
-		Point newPoint = null;
+		Point newPoint = Rng.aBoolean() ? neighbours[previousNeighbour] : null;
 		while (newPoint == null) {
-			int ri = RandomInt.anyRandomIntRange(0, neighbours.length);
-			if (neighbours[ri] != null)
-				newPoint = neighbours[ri];
+			int ri = Rng.anyRandomIntRange(0, neighbours.length);
+			if (neighbours[ri] != null) {
+                newPoint = neighbours[ri];
+                previousNeighbour = ri;
+            }
 		}
 		return newPoint;
 	}

@@ -4,7 +4,7 @@ import java.awt.Point;
 
 import ajb.domain.Pixel;
 import ajb.domain.AssetSize;
-import ajb.random.RandomInt;
+import ajb.random.Rng;
 import ajb.utils.PixelGridUtils;
 
 public class StationGeneratorFactory {
@@ -81,8 +81,8 @@ public class StationGeneratorFactory {
 
 		Point point = new Point(rows -1, cols - 1);
 
-		int steps = RandomInt.anyRandomIntRange(calculateMinNoOfSteps(size), calculateMaxNoOfSteps(size));
-		int subSteps = RandomInt.anyRandomIntRange(calculateMinNoOfSubSteps(size), calculateMaxNoOfSubSteps(size));
+		int steps = Rng.anyRandomIntRange(calculateMinNoOfSteps(size), calculateMaxNoOfSteps(size));
+		int subSteps = Rng.anyRandomIntRange(calculateMinNoOfSubSteps(size), calculateMaxNoOfSubSteps(size));
 
 		for (int i = 0; i < steps; i++) {
 
