@@ -29,7 +29,7 @@ public class VesselGeneratorFactory {
         cols = size.col;
 
         timeCreate.start();
-		Pixel[][] grid = createBaseGrid(size, steps, parameters);
+		Pixel[][] grid = createBaseGrid(steps, parameters);
         timeCreate.end();
 
         timeAddExtra.start();
@@ -95,10 +95,10 @@ public class VesselGeneratorFactory {
 		return result;
 	}
 
-	private Pixel[][] createBaseGrid(AssetSize size, Steps stepsConst, Parameters param) {
+	private Pixel[][] createBaseGrid(Steps stepsConst, Parameters param) {
 		Pixel[][] grid = new Pixel[rows][cols];
 		PixelGridUtils.initEmptyGrid(grid, rows, cols);
-		Point point = new Point(rows / 2, cols - 1);
+		Point point = new Point((int) (rows * param.tendencyToBeWide), cols - 1);
 
 		int steps = Rng.intBetween(stepsConst.minSubStep, stepsConst.maxSubSteps);
 		int subSteps = Rng.intBetween(stepsConst.minSteps, stepsConst.maxSteps);

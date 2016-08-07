@@ -337,34 +337,24 @@ public class PixelGridUtils {
     }
 
     public static void mergeGridsRandomly(Pixel[][] sourceGrid, Pixel[][] targetGrid) {
-
         int attempts = 0;
-
         Point targetPoint = null;
 
         while (targetPoint == null && attempts < 10) {
-
             Point potentialPoint = getRandomFilledPoint(targetGrid);
             potentialPoint.x = potentialPoint.x - sourceGrid.length - 1;
             potentialPoint.y = potentialPoint.y - sourceGrid[0].length - 1;
-
-            if (isPointWithinGrid(potentialPoint, targetGrid)) {
+            if (isPointWithinGrid(potentialPoint, targetGrid))
                 targetPoint = potentialPoint;
-            }
-
             attempts++;
         }
-
         if (targetPoint != null) {
-
             int startY = targetPoint.y;
-
             for (int r = 0; r < sourceGrid.length; r++) {
                 for (int c = 0; c < sourceGrid[0].length; c++) {
                     targetGrid[targetPoint.x][targetPoint.y].value = sourceGrid[r][c].value;
                     targetPoint.y = targetPoint.y + 1;
                 }
-
                 targetPoint.x = targetPoint.x + 1;
                 targetPoint.y = startY;
             }
@@ -372,31 +362,22 @@ public class PixelGridUtils {
     }
 
     public static Pixel[][] floorHorizontally(Pixel[][] grid) {
+        Pixel[][] flooredGrid;
 
-        Pixel[][] flooredGrid = null;
-
-        int lastFilledCol = 0;
-        int firstFilledColumn = grid[0].length;
+        int lastFilledCol = 0, firstFilledColumn = grid[0].length;
 
         for (int r = 0; r < grid.length; r++) {
             for (int c = 0; c < grid[0].length; c++) {
                 boolean colEmpty = true;
-
                 if (grid[r][c].value != Pixel.State.EMPTY) {
-
-                    if (firstFilledColumn > c) {
+                    if (firstFilledColumn > c)
                         firstFilledColumn = c;
-                    }
-
                     colEmpty = false;
                 }
-
-                if (!colEmpty && c > lastFilledCol) {
+                if (!colEmpty && c > lastFilledCol)
                     lastFilledCol = c;
-                }
             }
         }
-
         flooredGrid = new Pixel[grid.length][lastFilledCol - (firstFilledColumn - 1)];
 
         int newRow = 0;
@@ -408,10 +389,8 @@ public class PixelGridUtils {
                 flooredGrid[newRow][newCol] = grid[r][c];
                 newCol++;
             }
-
             newRow++;
         }
-
         return flooredGrid;
     }
 
