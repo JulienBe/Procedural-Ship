@@ -6,7 +6,7 @@ package ajb.domain;
 public enum Parameters {
 
     PREVIOUS(0.25f, 0, 0f, 0.1f, 0.1f, 0.8f, 0.5f),
-    MINE(     0.50f, 0.05f, .6f, 1f, 2f, 5f, 0f);
+    MINE(     0.65f, 0.05f, .6f, 1f, 2f, 5f, 0.1f);
 
     public float colorMaxPercentage, colorMinPercentage, tendancyToKeepLine, tendencyToBeWide;
     public int blackNoisePercentage, greyNoisePercentage, colorNoisePercentage;

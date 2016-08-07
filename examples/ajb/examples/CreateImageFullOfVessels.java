@@ -28,8 +28,8 @@ public class CreateImageFullOfVessels {
 			List<Pixel[][]> grids = new ArrayList<Pixel[][]>();
 	
 			// create X vessels and add to our list
-			for (int i = 0; i < 100; i++) {
-				Pixel[][] grid = factory.create(size, PARAM, Steps.large);
+			for (int i = 0; i < 25; i++) {
+				Pixel[][] grid = factory.create(size, PARAM, Steps.MEDIUM);
 				// add grid to list
 				grids.add(grid);
 			}

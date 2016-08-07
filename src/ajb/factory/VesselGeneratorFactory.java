@@ -23,6 +23,7 @@ public class VesselGeneratorFactory {
             timeAddExtra = new Metric();
 	private int rows = 0;
 	private int cols = 0;
+	private int cptGenerated = 0;
 
 	public Pixel[][] create(AssetSize size, Parameters parameters, Steps steps) {
 		rows = size.row;
@@ -91,13 +92,14 @@ public class VesselGeneratorFactory {
         if (colorPercentage > parameters.colorMaxPercentage || colorPercentage < parameters.colorMinPercentage)
 			return false;
 
-        System.out.println(grid.hashCode());
+        System.out.println(cptGenerated++ + " width : " + grid.length);
 		return result;
 	}
 
 	private Pixel[][] createBaseGrid(Steps stepsConst, Parameters param) {
 		Pixel[][] grid = new Pixel[rows][cols];
 		PixelGridUtils.initEmptyGrid(grid, rows, cols);
+		PixelGridUtils.addPattern(grid, Pixel.State.FILLED);
 		Point point = new Point((int) (rows * param.tendencyToBeWide), cols - 1);
 
 		int steps = Rng.intBetween(stepsConst.minSubStep, stepsConst.maxSubSteps);
@@ -107,12 +109,13 @@ public class VesselGeneratorFactory {
 			if (point == null) {
 				// we are passed the first step lets find the lowest most pixel that is closest to the middle, and go again from there...
 				// top down
-				for (int x = 0; x < rows; x++)
-					// left to right
-					for (int y = 0; y < cols; y++)
-						if (grid[x][y].value == Pixel.State.FILLED)
-							point = new Point(x, y);
-
+				for (int x = 0; x < rows; x++) {
+                    // left to right
+                    for (int y = 0; y < cols; y++)
+                        if (grid[x][y].value == Pixel.State.FILLED) {
+                            point = new Point(x, y);
+                        }
+                }
 			}
 			for (int y = 0; y < subSteps; y++)
 				point = processPoint(point, grid, param);

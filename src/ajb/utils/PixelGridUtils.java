@@ -529,7 +529,7 @@ public class PixelGridUtils {
     }
 
     private static Point[] getNeightboursPoints(Point point, Pixel[][] grid) {
-        Point[] neighbours = new Point[8];
+        Point[] neighbours = new Point[10];
         Point top = new Point(point.x - 1, point.y);
         Point topLeft = new Point(point.x - 1, point.y - 1);
         Point topRight = new Point(point.x - 1, point.y + 1);
@@ -547,6 +547,8 @@ public class PixelGridUtils {
         assignIfValid(5, topRight, neighbours, grid);
         assignIfValid(6, bottomLeft, neighbours, grid);
         assignIfValid(7, bottomRight, neighbours, grid);
+        assignIfValid(8, right, neighbours, grid);
+        assignIfValid(9, bottomRight, neighbours, grid);
 
         return neighbours;
     }
@@ -570,5 +572,55 @@ public class PixelGridUtils {
                 if (grid[r][c].value == type)
                     result++;
         return result;
+    }
+
+
+    public static void addPattern(Pixel[][] grid, Pixel.State state) {
+        int iterations = Rng.anInt(10);
+        int length = Rng.anInt(30);
+        int startX = Rng.anInt(grid.length);
+        int startY = Rng.anInt(grid[startX].length);
+        for (int i = 0; i < iterations; i++)
+            drawLine(grid, state, length,
+                    -1, i % 2,
+                    startY + i * 4, startX + grid[0].length - i);
+    }
+
+    private static void arrowHead(Pixel[][] grid, Pixel.State state) {
+        int iterations = 60;
+        for (int i = 0; i < 15; i++)
+            drawLine(grid, state, iterations,
+                    -1, 1,
+                    i * 4, grid[0].length - i);
+    }
+    private static void drillHead(Pixel[][] grid, Pixel.State state) {
+        int iterations = 60;
+        for (int i = 0; i < 15; i++)
+            drawLine(grid, state, iterations,
+                    0, 0,
+                    i * 4, grid[0].length - i);
+    }
+    private static void squareHead(Pixel[][] grid, Pixel.State state) {
+        int iterations = 60;
+        for (int i = 0; i < 15; i++)
+            drawLine(grid, state, iterations,
+                    -1, i % 2,
+                    i * 4, grid[0].length - i);
+    }
+
+    public static void drawLine(Pixel[][] grid, Pixel.State state, int iterations, int xOrientation, int yOrientation, int xStarter, int yStarter) {
+        int x = xStarter;
+        int y = yStarter;
+        for (int i = 0; i < iterations; i++) {
+            if (coordWithinGrid(grid, x, y))
+                grid[x][y].value = state;
+            // continuing if not valid allows for picking a not valid starting point
+            x += xOrientation;
+            y += yOrientation;
+        }
+    }
+
+    public static boolean coordWithinGrid(Pixel[][] grid, int x, int y) {
+        return x >= 0 && y >= 0 && x < grid.length && y < grid[x].length;
     }
 }

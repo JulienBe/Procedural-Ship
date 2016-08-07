@@ -7,7 +7,7 @@ public enum Steps {
 
     random(5, 50,  5, 50),
     small(5, 15,  5, 30),
-    medium(10, 30, 10, 40),
+    MEDIUM(10, 30, 10, 40),
     large(20, 50, 15, 50);
 
     public final int minSteps, maxSteps, minSubStep,maxSubSteps;
