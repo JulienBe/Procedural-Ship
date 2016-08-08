@@ -9,6 +9,7 @@ public class Rng extends Random {
 
     private static final Random rand = new Random("SeeD".hashCode());
 
+    public static int gaussianFlooredScaler(float mul) { return (int)(Math.abs(rand.nextGaussian()) * mul); }
     public static int intBetween(int min, int max) { return min + rand.nextInt(max); }
     public static int anInt(int max) { return rand.nextInt(max); }
     public static boolean aBoolean() { return rand.nextBoolean(); }

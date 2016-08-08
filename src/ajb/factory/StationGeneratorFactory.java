@@ -37,7 +37,7 @@ public class StationGeneratorFactory {
 		grid = PixelGridUtils.addBorders(grid);
 		grid = PixelGridUtils.removeEmptyCells(grid);
 		PixelGridUtils.fillEmptySurroundedPixelsInGrid(grid);
-		PixelGridUtils.addNoiseToFlatPixels(grid, Parameters.MINE);
+		PixelGridUtils.addStuctureToFlatAreas(grid, Parameters.MINE);
 		PixelGridUtils.setPixelDepth(grid);		
 
 		if (validateGrid(grid)) {		

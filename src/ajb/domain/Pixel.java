@@ -15,7 +15,8 @@ public class Pixel {
         /**
          * A secondary pixel has the secondary color, that is to say, the bright color
          */
-        SECONDARY(3);
+        SECONDARY(3),
+        FILL_STRUCTURE(4);
 
         int value;
 

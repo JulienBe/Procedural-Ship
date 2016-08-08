@@ -5,13 +5,13 @@ package ajb.domain;
  */
 public enum Parameters {
 
-    PREVIOUS(0.25f, 0, 0f, 0.1f, 0.1f, 0.8f, 0.5f),
-    MINE(     0.65f, 0.05f, .6f, 1f, 2f, 5f, 0.1f);
+    PREVIOUS(0.25f, 0, 0f, 0.1f, 0.1f, 0.8f, 0.5f, 0),
+    MINE(     0.65f, 0.25f, .7f, 1f, 2f, 5f, 0.1f, 3);
 
-    public float colorMaxPercentage, colorMinPercentage, tendancyToKeepLine, tendencyToBeWide;
+    public float colorMaxPercentage, colorMinPercentage, tendancyToKeepLine, tendencyToBeWide, streakMul;
     public int blackNoisePercentage, greyNoisePercentage, colorNoisePercentage;
 
-    Parameters(float colorMaxPercentage, float colorMinPercentage, float tendancyToKeepLine, float blackNoisePercentage, float greyNoisePercentage, float colorPercentage, float tendencyToBeWide) {
+    Parameters(float colorMaxPercentage, float colorMinPercentage, float tendancyToKeepLine, float blackNoisePercentage, float greyNoisePercentage, float colorPercentage, float tendencyToBeWide, int streakMul) {
         this.colorMaxPercentage = colorMaxPercentage;
         this.colorMinPercentage = colorMinPercentage;
         this.tendancyToKeepLine = tendancyToKeepLine;
@@ -20,5 +20,6 @@ public enum Parameters {
         this.colorNoisePercentage = (int) ((colorPercentage / percentageTotal) * 100);
         this.greyNoisePercentage = (int) ((greyNoisePercentage / percentageTotal) * 100);
         this.tendencyToBeWide = tendencyToBeWide;
+        this.streakMul = streakMul;
     }
 }

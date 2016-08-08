@@ -64,7 +64,7 @@ public class VesselGeneratorFactory {
 
 		if (validateGrid(grid, parameters)) {
             timeNoise.start();
-            PixelGridUtils.addNoiseToFlatPixels(grid, parameters);
+            PixelGridUtils.addStuctureToFlatAreas(grid, parameters);
             timeNoise.end();
 			return grid;
 		} else {

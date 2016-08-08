@@ -250,48 +250,18 @@ public class PixelGridUtils {
      *
      * @param grid {@link Pixel}[][]
      */
-    public static void addNoiseToFlatPixels(Pixel[][] grid, Parameters param) {
-        for (int r = 0; r < grid.length; r++) {
-            for (int c = 0; c < grid[0].length; c++) {
-                if (grid[r][c].value == Pixel.State.SECONDARY && Rng.anInt(3) == 0) {
-                    boolean filledPixelAbove = false;
-                    boolean filledPixelBelow = false;
-                    boolean filledPixelOnTheLeft = false;
-                    boolean filledPixelOnTheRight = false;
-
-                    for (int r1 = r - 1; r1 > 0; r1--)
-                        if (grid[r1][c].value == Pixel.State.EMPTY) {
-                            filledPixelAbove = false;
-                            break;
-                        } else if (grid[r1][c].value == Pixel.State.FILLED) {
-                            filledPixelAbove = true;
-                            break;
-                        }
-                    for (int r1 = r + 1; r1 < grid.length; r1++)
-                        if (grid[r1][c].value == Pixel.State.EMPTY) {
-                            filledPixelBelow = false;
-                            break;
-                        } else if (grid[r1][c].value == Pixel.State.FILLED) {
-                            filledPixelBelow = true;
-                            break;
-                        }
-                    for (int c1 = c - 1; c1 > 0; c1--)
-                        if (grid[r][c1].value == Pixel.State.EMPTY) {
-                            filledPixelOnTheLeft = false;
-                            break;
-                        } else if (grid[r][c1].value == Pixel.State.FILLED) {
-                            filledPixelOnTheLeft = true;
-                            break;
-                        }
-                    for (int c1 = c + 1; c1 < grid[0].length; c1++)
-                        if (grid[r][c1].value == Pixel.State.EMPTY) {
-                            filledPixelOnTheLeft = false;
-                            break;
-                        } else if (grid[r][c1].value == Pixel.State.FILLED) {
-                            filledPixelOnTheRight = true;
-                            break;
-                        }
-                    setNoiseValue(grid, param, r, c, filledPixelAbove, filledPixelBelow, filledPixelOnTheLeft, filledPixelOnTheRight);
+    public static void addStuctureToFlatAreas(Pixel[][] grid, Parameters param) {
+        for (int x = 0; x < grid.length; x++) {
+            int streakLength = Rng.gaussianFlooredScaler(param.streakMul);
+            System.out.println(streakLength);
+            int currentStreak = 0;
+            for (int y = 0; y < grid[0].length; y++) {
+                if (grid[x][y].value == Pixel.State.SECONDARY && currentStreak++ < streakLength) {
+                    boolean filledPixelAbove = grid[x - 1][y].value != Pixel.State.EMPTY;
+                    boolean filledPixelBelow = grid[x + 1][y].value != Pixel.State.EMPTY;
+                    boolean filledPixelOnTheLeft = grid[x][y - 1].value != Pixel.State.EMPTY;
+                    boolean filledPixelOnTheRight = grid[x][y + 1].value != Pixel.State.EMPTY;
+                    setNoiseValue(grid, param, x, y, filledPixelAbove, filledPixelBelow, filledPixelOnTheLeft, filledPixelOnTheRight);
                 }
             }
         }
@@ -311,6 +281,7 @@ public class PixelGridUtils {
                 grid[r][c].value = Pixel.State.BORDER;
             if (filled > secondary && filled > border)
                 grid[r][c].value = Pixel.State.FILLED;
+            grid[r][c].value = Pixel.State.FILL_STRUCTURE;
         }
     }
 
@@ -540,15 +511,15 @@ public class PixelGridUtils {
         Point right = new Point(point.x, point.y + 1);
 
         assignIfValid(0, top, neighbours, grid);
-        assignIfValid(1, bottom, neighbours, grid);
         assignIfValid(2, left, neighbours, grid);
         assignIfValid(3, right, neighbours, grid);
+        assignIfValid(1, bottom, neighbours, grid);
         assignIfValid(4, topLeft, neighbours, grid);
         assignIfValid(5, topRight, neighbours, grid);
         assignIfValid(6, bottomLeft, neighbours, grid);
         assignIfValid(7, bottomRight, neighbours, grid);
-        assignIfValid(8, right, neighbours, grid);
-        assignIfValid(9, bottomRight, neighbours, grid);
+        assignIfValid(8, bottomRight, neighbours, grid);
+        assignIfValid(9, topRight, neighbours, grid);
 
         return neighbours;
     }
@@ -576,7 +547,7 @@ public class PixelGridUtils {
 
 
     public static void addPattern(Pixel[][] grid, Pixel.State state) {
-        int iterations = Rng.anInt(10);
+        int iterations = Rng.anInt(12);
         int length = Rng.anInt(30);
         int startX = Rng.anInt(grid.length);
         int startY = Rng.anInt(grid[startX].length);

@@ -19,7 +19,7 @@ public class ConsoleGeneratorFactory {
 		grid = PixelGridUtils.mirrorCopyGridHorizontally(grid);
 		grid = PixelGridUtils.addBorders(grid);
 		PixelGridUtils.fillEmptySurroundedPixelsInGrid(grid);
-		PixelGridUtils.addNoiseToFlatPixels(grid, param);
+		PixelGridUtils.addStuctureToFlatAreas(grid, param);
 		PixelGridUtils.setPixelDepth(grid);		
 
 		return validateGrid(grid) ? grid : create(param);
