@@ -198,45 +198,36 @@ public class PixelGridUtils {
      * Loops through each pixel in the grid and works out if they are surrounded
      * by filled pixels i.e. a straight path through other pixels until it hits
      * a pixel of value Pixel.State.FILLED
+     * <p>
+     * Does not check below to have the "thruster" pattern emerge
      *
      * @param grid {@link Pixel}[][]
      */
     public static void fillEmptySurroundedPixelsInGrid(Pixel[][] grid) {
-        for (int r = 0; r < grid.length; r++) {
-            for (int c = 0; c < grid[0].length; c++) {
-                if (grid[r][c].value == Pixel.State.EMPTY) {
+        for (int x = 0; x < grid.length; x++) {
+            for (int y = 0; y < grid[0].length; y++) {
+                if (grid[x][y].value == Pixel.State.EMPTY) {
                     boolean filledPixelAbove = false;
-                    boolean filledPixelBelow = false;
                     boolean filledPixelOnTheLeft = false;
                     boolean filledPixelOnTheRight = false;
 
-                    for (int r1 = r - 1; r1 > 0; r1--) {
-                        if (grid[r1][c].value == Pixel.State.FILLED) {
+                    for (int x1 = x - 1; x1 > 0; x1--)
+                        if (grid[x1][y].value == Pixel.State.FILLED) {
                             filledPixelAbove = true;
                             break;
                         }
-                    }
-                    for (int r1 = r + 1; r1 < grid.length; r1++) {
-                        if (grid[r1][c].value == Pixel.State.FILLED) {
-                            filledPixelBelow = true;
-                            break;
-                        }
-                    }
-                    for (int c1 = c - 1; c1 > 0; c1--) {
-                        if (grid[r][c1].value == Pixel.State.FILLED) {
+                    for (int y1 = y - 1; y1 > 0; y1--)
+                        if (grid[x][y1].value == Pixel.State.FILLED) {
                             filledPixelOnTheLeft = true;
                             break;
                         }
-                    }
-                    for (int c1 = c + 1; c1 < grid[0].length; c1++) {
-                        if (grid[r][c1].value == Pixel.State.FILLED) {
+                    for (int y1 = y + 1; y1 < grid[0].length; y1++)
+                        if (grid[x][y1].value == Pixel.State.FILLED) {
                             filledPixelOnTheRight = true;
                             break;
                         }
-                    }
-                    if (filledPixelAbove && filledPixelBelow && filledPixelOnTheLeft && filledPixelOnTheRight) {
-                        grid[r][c].value = Pixel.State.SECONDARY;
-                    }
+                    if (filledPixelAbove && filledPixelOnTheLeft && filledPixelOnTheRight)
+                        grid[x][y].value = Pixel.State.SECONDARY;
                 }
             }
         }
@@ -577,6 +568,7 @@ public class PixelGridUtils {
                     -1, 1,
                     i * 4, grid[0].length - i);
     }
+
     private static void drillHead(Pixel[][] grid, Pixel.State state) {
         int iterations = 60;
         for (int i = 0; i < 15; i++)
@@ -584,6 +576,7 @@ public class PixelGridUtils {
                     0, 0,
                     i * 4, grid[0].length - i);
     }
+
     private static void squareHead(Pixel[][] grid, Pixel.State state) {
         int iterations = 60;
         for (int i = 0; i < 15; i++)
@@ -606,5 +599,9 @@ public class PixelGridUtils {
 
     public static boolean coordWithinGrid(Pixel[][] grid, int x, int y) {
         return x >= 0 && y >= 0 && x < grid.length && y < grid[x].length;
+    }
+
+    public static void fillInnerLight(Pixel[][] grid) {
+
     }
 }

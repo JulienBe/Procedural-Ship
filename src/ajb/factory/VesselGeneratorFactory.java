@@ -40,7 +40,6 @@ public class VesselGeneratorFactory {
         timeRemoveEmpty1.start();
 		grid = PixelGridUtils.removeEmptyCells(grid);
         timeRemoveEmpty1.end();
-
         if (grid.length < parameters.minHeight || grid.length > parameters.maxHeight)
             return create(size, parameters, steps);
 
@@ -59,11 +58,11 @@ public class VesselGeneratorFactory {
         timeFillEmpty.start();
 		PixelGridUtils.fillEmptySurroundedPixelsInGrid(grid);
         timeFillEmpty.end();
+        PixelGridUtils.fillInnerLight(grid);
 
         timeDepth.start();
 		PixelGridUtils.setPixelDepth(grid);
         timeDepth.end();
-
 
 		if (validateGrid(grid, parameters)) {
             timeNoise.start();
