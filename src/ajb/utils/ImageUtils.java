@@ -62,7 +62,7 @@ public class ImageUtils {
 						break;
 					case FILL_STRUCTURE:
 					    if (noise) {
-                            gr.setColor(Color.BLACK);
+                            gr.setColor(ColorUtils.lighter(secondaryColor, grid[r][c].depth * 0.05));
                             gr.fillRect(c * scaleFactor, r * scaleFactor, scaleFactor, scaleFactor);
                         }
 						break;

@@ -256,22 +256,25 @@ public class PixelGridUtils {
             System.out.println(streakLength);
             int currentStreak = 0;
             for (int y = 0; y < grid[0].length; y++) {
-                if (grid[x][y].value == Pixel.State.SECONDARY && currentStreak++ < streakLength) {
+                if (grid[x][y].value == Pixel.State.SECONDARY) {
                     boolean filledPixelAbove = grid[x - 1][y].value != Pixel.State.EMPTY;
                     boolean filledPixelBelow = grid[x + 1][y].value != Pixel.State.EMPTY;
                     boolean filledPixelOnTheLeft = grid[x][y - 1].value != Pixel.State.EMPTY;
                     boolean filledPixelOnTheRight = grid[x][y + 1].value != Pixel.State.EMPTY;
-                    setNoiseValue(grid, param, x, y, filledPixelAbove, filledPixelBelow, filledPixelOnTheLeft, filledPixelOnTheRight);
+                    if (currentStreak++ < streakLength)
+                        setFillIfAll(grid, x, y, filledPixelAbove, filledPixelBelow, filledPixelOnTheLeft, filledPixelOnTheRight);
+                    else if (Rng.anInt(4) == 0)
+                        setNoiseValue(grid, param, x, y, filledPixelAbove, filledPixelBelow, filledPixelOnTheLeft, filledPixelOnTheRight);
                 }
             }
         }
     }
 
-    private static void setNoiseValue(Pixel[][] grid, Parameters param, int r, int c, boolean filledPixelAbove, boolean filledPixelBelow, boolean filledPixelOnTheLeft, boolean filledPixelOnTheRight) {
+    private static void setNoiseValue(Pixel[][] grid, Parameters param, int r, int c, boolean... check) {
         /**
          * TODO : Rework to make it more flexible
          */
-        if (Utility.countTrues(filledPixelAbove, filledPixelBelow, filledPixelOnTheLeft, filledPixelOnTheRight) == 4) {
+        if (Utility.countTrues(check) == check.length) {
             int secondary = Rng.anInt(param.greyNoisePercentage);
             int border = Rng.anInt(param.blackNoisePercentage);
             int filled = Rng.anInt(param.colorNoisePercentage);
@@ -281,8 +284,12 @@ public class PixelGridUtils {
                 grid[r][c].value = Pixel.State.BORDER;
             if (filled > secondary && filled > border)
                 grid[r][c].value = Pixel.State.FILLED;
-            grid[r][c].value = Pixel.State.FILL_STRUCTURE;
         }
+    }
+
+    private static void setFillIfAll(Pixel[][] grid, int r, int c, boolean... check) {
+        if (Utility.countTrues(check) == check.length)
+            grid[r][c].value = Pixel.State.FILL_STRUCTURE;
     }
 
     public static Point getRandomFilledPoint(Pixel[][] grid) {
