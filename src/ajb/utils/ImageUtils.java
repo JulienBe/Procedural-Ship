@@ -24,7 +24,7 @@ public class ImageUtils {
 		if (secondaryColor == null)
 			secondaryColor = Color.decode(ColorUtils.getRandomColour());
 
-		BufferedImage layer1Img = createImage(grid, primaryColor, secondaryColor, false);
+		BufferedImage layer1Img = createImage(grid, primaryColor, secondaryColor, true);
 		BufferedImage result = blend(volumeAndLightLayer(grid, primaryColor, secondaryColor), layer1Img);
 
 		return result;
@@ -46,29 +46,29 @@ public class ImageUtils {
 
 		gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-		// ho... I think that he has inverted x and y here...
-		for (int r = 0; r < grid.length; r++) {
-			for (int c = 0; c < grid[0].length; c++) {
-				switch (grid[r][c].value) {
+		// ho... I think that he has inverted x and y here... Really need a grid abstraction
+		for (int x = 0; x < grid.length; x++) {
+			for (int y = 0; y < grid[0].length; y++) {
+				switch (grid[x][y].value) {
 					case BORDER:
 						gr.setColor(Color.BLACK);
-						gr.fillRect(c * scaleFactor, r * scaleFactor, scaleFactor, scaleFactor);
+						gr.fillRect(y * scaleFactor, x * scaleFactor, scaleFactor, scaleFactor);
 						break;
 					case EMPTY:
 						break;
 					case FILLED:
-						gr.setColor(ColorUtils.lighter(primaryColor, grid[r][c].depth * 0.05 > 3 ? 3 : grid[r][c].depth * 0.05));
-						gr.fillRect(c * scaleFactor, r * scaleFactor, scaleFactor, scaleFactor);
+						gr.setColor(ColorUtils.lighter(primaryColor, grid[x][y].depth * 0.05 > 3 ? 3 : grid[x][y].depth * 0.05));
+						gr.fillRect(y * scaleFactor, x * scaleFactor, scaleFactor, scaleFactor);
 						break;
 					case FILL_STRUCTURE:
 					    if (noise) {
-                            gr.setColor(ColorUtils.lighter(secondaryColor, grid[r][c].depth * 0.05));
-                            gr.fillRect(c * scaleFactor, r * scaleFactor, scaleFactor, scaleFactor);
+                            gr.setColor(ColorUtils.lighter(secondaryColor, grid[x][y].depth * 0.15f));
+                            gr.fillRect(y * scaleFactor, x * scaleFactor, scaleFactor, scaleFactor);
                         }
 						break;
 					case SECONDARY:
-						gr.setColor(ColorUtils.lighter(secondaryColor, grid[r][c].depth * 0.05));
-						gr.fillRect(c * scaleFactor, r * scaleFactor, scaleFactor, scaleFactor);
+						gr.setColor(ColorUtils.lighter(secondaryColor, grid[x][y].depth * 0.05));
+						gr.fillRect(y * scaleFactor, x * scaleFactor, scaleFactor, scaleFactor);
 						break;
 				}
 			}

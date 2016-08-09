@@ -265,15 +265,18 @@ public class PixelGridUtils {
          * TODO : Rework to make it more flexible
          */
         if (Utility.countTrues(check) == check.length) {
-            int secondary = Rng.anInt(param.greyNoisePercentage);
-            int border = Rng.anInt(param.blackNoisePercentage);
-            int filled = Rng.anInt(param.colorNoisePercentage);
-            if (secondary > border && secondary > filled)
-                grid[r][c].value = Pixel.State.SECONDARY;
-            if (border > secondary && border > filled)
-                grid[r][c].value = Pixel.State.BORDER;
-            if (filled > secondary && filled > border)
+//            int secondary = Rng.anInt(param.greyNoisePercentage);
+//            int border = Rng.anInt(param.blackNoisePercentage);
+//            int filled = Rng.anInt(param.colorNoisePercentage);
+//            if (secondary > border && secondary > filled)
+//                grid[r][c].value = Pixel.State.SECONDARY;
+//            if (border > secondary && border > filled)
+//                grid[r][c].value = Pixel.State.BORDER;
+//            if (filled > secondary && filled > border)
+            if (c % 2 == 0)
                 grid[r][c].value = Pixel.State.FILLED;
+            else
+                grid[r][c].value = Pixel.State.SECONDARY;
         }
     }
 

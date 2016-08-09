@@ -27,6 +27,10 @@ import ajb.random.Rng;
  * @author <a href="mailto:jacob.dreyer@geosoft.no">Jacob Dreyer</a>
  */
 public class ColorUtils {
+
+	public static final String BLUE = "#20ABFF", RED = "#FF5210", GREEN = "#7FFF17", YELLOW = "#FFF600", PURPLE = "#FF57F0";
+    public static final String[] COLOURS = {BLUE, RED, GREEN, YELLOW};
+
 	/**
 	 * Blend two colors.
 	 * 
@@ -236,19 +240,6 @@ public class ColorUtils {
 	}
 	
 	public static String getRandomColour() {
-		String blue = "#79ABFF";
-		String red = "#D25252";
-		String green = "#7FB347";
-		String yellow = "#FFC600";
-		String purple = "#D197D9";
-		
-		String[] colours = new String[5];
-		colours[0] = blue;
-		colours[1] = red;
-		colours[2] = green;
-		colours[3] = yellow;
-		colours[4] = purple;				
-		
-		return colours[Rng.intBetween(0, 4)];
+		return COLOURS[Rng.anInt(COLOURS.length)];
 	}
 }

@@ -13,7 +13,11 @@ public enum Parameters {
      */
     public float tendancyToKeepLine;
     public float colorMaxPercentage, colorMinPercentage, tendencyToBeWide, streakMul;
-    public int blackNoisePercentage, greyNoisePercentage, colorNoisePercentage, minHeight, maxHeight;
+    /**
+     * Not used for the moment
+     */
+    public int blackNoisePercentage, greyNoisePercentage, colorNoisePercentage;
+    public int minHeight, maxHeight;
 
     Parameters(float colorMaxPercentage, float colorMinPercentage, float tendancyToKeepLine, float blackNoisePercentage, float greyNoisePercentage, float colorPercentage, float tendencyToBeWide, int streakMul, int minHeight, int maxHeight) {
         this.colorMaxPercentage = colorMaxPercentage;
