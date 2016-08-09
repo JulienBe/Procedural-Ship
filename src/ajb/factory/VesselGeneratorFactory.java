@@ -33,13 +33,16 @@ public class VesselGeneratorFactory {
 		Pixel[][] grid = createBaseGrid(steps, parameters);
         timeCreate.end();
 
-        timeAddExtra.start();
+		timeAddExtra.start();
 		addExtras(grid, steps, parameters);
         timeAddExtra.end();
 
         timeRemoveEmpty1.start();
 		grid = PixelGridUtils.removeEmptyCells(grid);
         timeRemoveEmpty1.end();
+
+        if (grid.length < parameters.minHeight || grid.length > parameters.maxHeight)
+            return create(size, parameters, steps);
 
         timeMirror.start();
 		grid = PixelGridUtils.mirrorCopyGridHorizontally(grid);
@@ -66,6 +69,7 @@ public class VesselGeneratorFactory {
             timeNoise.start();
             PixelGridUtils.addStuctureToFlatAreas(grid, parameters);
             timeNoise.end();
+			System.out.println(cptGenerated++ + " width : " + grid.length);
 			return grid;
 		} else {
 			return create(size, parameters, steps);
@@ -91,8 +95,6 @@ public class VesselGeneratorFactory {
 			return false;
         if (colorPercentage > parameters.colorMaxPercentage || colorPercentage < parameters.colorMinPercentage)
 			return false;
-
-        System.out.println(cptGenerated++ + " width : " + grid.length);
 		return result;
 	}
 

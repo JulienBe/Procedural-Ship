@@ -23,13 +23,13 @@ public class CreateImageFullOfVessels {
 		VesselGeneratorFactory factory = new VesselGeneratorFactory();
 
 //		for (AssetSize size : AssetSize.values()) {
-        AssetSize size = AssetSize.MEDIUM;
+        AssetSize size = AssetSize.SMALL;
 			// list to hold all the vessels we generate
 			List<Pixel[][]> grids = new ArrayList<Pixel[][]>();
 	
 			// create X vessels and add to our list
-			for (int i = 0; i < 25; i++) {
-				Pixel[][] grid = factory.create(size, PARAM, Steps.MEDIUM);
+			for (int i = 0; i < 100; i++) {
+				Pixel[][] grid = factory.create(size, PARAM, Steps.SMALL);
 				// add grid to list
 				grids.add(grid);
 			}

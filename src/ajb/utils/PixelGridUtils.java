@@ -9,7 +9,7 @@ import ajb.random.Rng;
 
 public class PixelGridUtils {
 
-    private static int previousNeighbour = 0;
+    private static int previousNeighbour = 0, keptLine = 0;
 
     /**
      * Returns true if the passed in point is within the boundaries of the passed in grid i.e.
@@ -253,7 +253,6 @@ public class PixelGridUtils {
     public static void addStuctureToFlatAreas(Pixel[][] grid, Parameters param) {
         for (int x = 0; x < grid.length; x++) {
             int streakLength = Rng.gaussianFlooredScaler(param.streakMul);
-            System.out.println(streakLength);
             int currentStreak = 0;
             for (int y = 0; y < grid[0].length; y++) {
                 if (grid[x][y].value == Pixel.State.SECONDARY) {
@@ -495,7 +494,13 @@ public class PixelGridUtils {
         Point[] neighbours = getNeightboursPoints(point, grid);
 
         // go to a random neighbour
-        Point newPoint = Rng.aFloat() < parameters.tendancyToKeepLine ? neighbours[previousNeighbour] : null;
+        Point newPoint = null;
+        if (Rng.aFloat() * keptLine < parameters.tendancyToKeepLine) {
+            newPoint = neighbours[previousNeighbour];
+            keptLine++;
+        } else {
+            keptLine = 0;
+        }
         while (newPoint == null) {
             int ri = Rng.intBetween(0, neighbours.length);
             if (neighbours[ri] != null) {
@@ -507,7 +512,7 @@ public class PixelGridUtils {
     }
 
     private static Point[] getNeightboursPoints(Point point, Pixel[][] grid) {
-        Point[] neighbours = new Point[10];
+        Point[] neighbours = new Point[11];
         Point top = new Point(point.x - 1, point.y);
         Point topLeft = new Point(point.x - 1, point.y - 1);
         Point topRight = new Point(point.x - 1, point.y + 1);
@@ -525,8 +530,9 @@ public class PixelGridUtils {
         assignIfValid(5, topRight, neighbours, grid);
         assignIfValid(6, bottomLeft, neighbours, grid);
         assignIfValid(7, bottomRight, neighbours, grid);
-        assignIfValid(8, bottomRight, neighbours, grid);
-        assignIfValid(9, topRight, neighbours, grid);
+        assignIfValid(8, top, neighbours, grid);
+        assignIfValid(9, bottom, neighbours, grid);
+        assignIfValid(9, right, neighbours, grid);
 
         return neighbours;
     }

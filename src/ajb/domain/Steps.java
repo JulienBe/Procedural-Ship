@@ -6,7 +6,7 @@ package ajb.domain;
 public enum Steps {
 
     random(5, 50,  5, 50),
-    small(5, 15,  5, 30),
+    SMALL(5, 15,  5, 30),
     MEDIUM(10, 30, 10, 40),
     large(20, 50, 15, 50);
 
